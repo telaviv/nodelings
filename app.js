@@ -4,9 +4,10 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
-  , http = require('http')
-  , path = require('path');
+var routes = require('./routes')
+var blank = require('./routes/blank.js')
+var http = require('http')
+var path = require('path');
 
 var app = express();
 
@@ -27,7 +28,8 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
+app.get('/blank', blank.blank);
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
+    console.log("Express server listening on port " + app.get('port'));
 });
