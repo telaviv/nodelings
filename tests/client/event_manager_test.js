@@ -38,8 +38,8 @@ var testCycleMultipleEvents = function() {
     var event2 = new EventCounter('test 2');
     var listener = new ListenerAdder();
 
-    em.addListener('test 1', listener);
-    em.addListener('test 2', listener);
+    em.addListener(event1.type, listener);
+    em.addListener(event2.type, listener);
     em.pushEvent(event1.type, event1.value);
     em.pushEvent(event2.type, event2.value);
     em.cycleEvents();
@@ -48,11 +48,26 @@ var testCycleMultipleEvents = function() {
     casper.test.assertEqual(event2.value.counter, 1);
 }
 
+var testMultipleListeners = function() {
+    var em = new event_manager.EventManager();
+    var event = new EventCounter('test');
+    var listener1 = new ListenerAdder();
+    var listener2 = new ListenerAdder();
+
+    em.addListener(event.type, listener1);
+    em.addListener(event.type, listener2);
+    em.pushEvent(event.type, event.value);
+    em.cycleEvents();
+
+    casper.test.assertEqual(event.value.counter, 2);
+}
+
 
 tests = [
     testCycleZeroEvents,
     testCycleOneEvent,
-    testCycleMultipleEvents
+    testCycleMultipleEvents,
+    testMultipleListeners
 ];
 
 casper.start().each(tests, function eachCasper(self, testCase) {
