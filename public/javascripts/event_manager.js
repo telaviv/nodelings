@@ -4,8 +4,8 @@
 
 var EventManager = function() {
     this.eventQueue = [];
-    this.listenerMap = {}
-}
+    this.listenerMap = {};
+};
 
 EventManager.prototype = {
 
@@ -21,8 +21,15 @@ EventManager.prototype = {
 	}
     },
 
+    /*
+     *  Goes through all the events in the queue, and has all
+     *  listeners registered to that event type, react to the event.
+     *
+     *  If an event is pushed during the cycleEvents method, then
+     *  it will be cycled during the method call.
+     */
     cycleEvents: function() {
-	while (this.eventQueue.length != 0) {
+	while (this.eventQueue.length !== 0) {
 	    var event = this.eventQueue.shift();
 	    var listeners = this.listenerMap[event.type];
 	    if (listeners) {
@@ -32,6 +39,6 @@ EventManager.prototype = {
 	    }
 	}
     }
-}
+};
 
 exports.EventManager = EventManager;

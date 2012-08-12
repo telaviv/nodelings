@@ -1,36 +1,38 @@
+var event_manager = require('./public/javascripts/event_manager.js');
+
 var casper = require('casper').create({
     verbose: true,
     logLevel: 'debug'
 });
-var event_manager = require('./public/javascripts/event_manager.js')
+
 
 var EventCounter = function(type) {
     this.type = type;
     this.value = {counter: 0};
-}
+};
 
 var ListenerAdder = function() {
     this.react = function(event) {
 	event.value.counter += 1;
-    }
-}
+    };
+};
 
 var testCycleZeroEvents = function() {
     var em = new event_manager.EventManager();
     // lets just verify this doesn't blow up.
     em.cycleEvents();
-}
+};
 
 var testCycleOneEvent = function() {
     var em = new event_manager.EventManager();
     var event = new EventCounter('test');
     var listener = new ListenerAdder();
 
-    em.addListener(event.type, listener)
+    em.addListener(event.type, listener);
     em.pushEvent(event.type, event.value);
     em.cycleEvents();
     casper.test.assertEqual(event.value.counter, 1);
-}
+};
 
 var testCycleMultipleEvents = function() {
     var em = new event_manager.EventManager();
@@ -46,7 +48,7 @@ var testCycleMultipleEvents = function() {
 
     casper.test.assertEqual(event1.value.counter, 1);
     casper.test.assertEqual(event2.value.counter, 1);
-}
+};
 
 var testMultipleListeners = function() {
     var em = new event_manager.EventManager();
@@ -60,7 +62,7 @@ var testMultipleListeners = function() {
     em.cycleEvents();
 
     casper.test.assertEqual(event.value.counter, 2);
-}
+};
 
 var testEventThrownInCycle = function() {
     var em = new event_manager.EventManager();
@@ -71,7 +73,7 @@ var testEventThrownInCycle = function() {
 	    event.value.counter += 1;
 	    em.pushEvent(event2.type, event2.value);
 	}
-    }
+    };
     var normalListener = new ListenerAdder();
 
     em.addListener(event1.type, throwListener);
@@ -81,7 +83,7 @@ var testEventThrownInCycle = function() {
 
     casper.test.assertEqual(event1.value.counter, 1);
     casper.test.assertEqual(event2.value.counter, 1);
-}
+};
 
 tests = [
     testCycleZeroEvents,
@@ -97,5 +99,5 @@ casper.start().each(tests, function eachCasper(self, testCase) {
     });
 });
 
-casper.run()
+casper.run();
 
