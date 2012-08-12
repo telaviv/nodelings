@@ -1,5 +1,5 @@
 var event_manager = require('./public/javascripts/event_manager.js');
-var canvas_mouse_event = require('./public/javascripts/canvas_mouse_event.js');
+var canvas_event = require('./public/javascripts/canvas_event.js');
 var utils = require('./public/javascripts/utils.js');
 
 var casper = require('casper').create({
@@ -24,7 +24,7 @@ var createDom = function() {
 };
 
 casper.start().then(function() {
-    createDom();
+    casper.evaluate(createDom);
 });
 
-
+casper.run();
