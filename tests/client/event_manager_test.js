@@ -95,7 +95,7 @@ tests = [
 
 casper.start().each(tests, function eachCasper(self, testCase) {
     self.then(function runTest() {
-	testCase();
+	casper.evaluate(testCase);
     });
 });
 

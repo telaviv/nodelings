@@ -41,4 +41,6 @@ EventManager.prototype = {
     }
 };
 
-exports.EventManager = EventManager;
+if (window['exports']) {
+    exports.EventManager = EventManager;
+}
