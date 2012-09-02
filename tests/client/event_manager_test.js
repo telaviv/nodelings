@@ -1,10 +1,7 @@
-var event_manager = require('./public/javascripts/event_manager.js');
-
 var casper = require('casper').create({
     verbose: true,
     logLevel: 'debug'
 });
-
 
 var EventCounter = function(type) {
     this.type = type;
@@ -18,13 +15,13 @@ var ListenerAdder = function() {
 };
 
 var testCycleZeroEvents = function() {
-    var em = new event_manager.EventManager();
+    var em = new EventManager();
     // lets just verify this doesn't blow up.
     em.cycleEvents();
 };
 
 var testCycleOneEvent = function() {
-    var em = new event_manager.EventManager();
+    var em = new EventManager();
     var event = new EventCounter('test');
     var listener = new ListenerAdder();
 
@@ -35,7 +32,7 @@ var testCycleOneEvent = function() {
 };
 
 var testCycleMultipleEvents = function() {
-    var em = new event_manager.EventManager();
+    var em = new EventManager();
     var event1 = new EventCounter('test 1');
     var event2 = new EventCounter('test 2');
     var listener = new ListenerAdder();
@@ -51,7 +48,7 @@ var testCycleMultipleEvents = function() {
 };
 
 var testMultipleListeners = function() {
-    var em = new event_manager.EventManager();
+    var em = new EventManager();
     var event = new EventCounter('test');
     var listener1 = new ListenerAdder();
     var listener2 = new ListenerAdder();
@@ -65,7 +62,7 @@ var testMultipleListeners = function() {
 };
 
 var testEventThrownInCycle = function() {
-    var em = new event_manager.EventManager();
+    var em = new EventManager();
     var event1 = new EventCounter('test 1');
     var event2 = new EventCounter('test 2');
     var throwListener = {

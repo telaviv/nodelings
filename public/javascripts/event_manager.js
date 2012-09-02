@@ -40,7 +40,3 @@ EventManager.prototype = {
 	}
     }
 };
-
-if (window['exports']) {
-    exports.EventManager = EventManager;
-}
