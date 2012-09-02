@@ -17,11 +17,10 @@ var CanvasEvent = function(eventManager, canvas) {
 };
 
 CanvasEvent.prototype.adaptClickEvent = function(event) {
-    console.log('adapt click event!!!');
     var offset = this.canvas.offset();
     var gameEventValue = {
 	x: event.pageX - offset.left,
-	y: event.pageY - offset.right
+	y: event.pageY - offset.top
     };
     this.em.pushEvent('board.click', gameEventValue);
 };

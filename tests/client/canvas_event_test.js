@@ -8,17 +8,14 @@ var CANVAS_OFFSET_LEFT = 75;
 var CANVAS_WIDTH = 100; // px
 var CANVAS_HEIGHT = 100; // px
 var CANVAS_ID = 'canvas';
-var CANVAS_ATTRIBUTES = { // jquery attributes to make the element.
-    width: CANVAS_WIDTH,
-    height: CANVAS_HEIGHT,
-    id: CANVAS_ID,
-    offset: {top: CANVAS_OFFSET_TOP, left: CANVAS_OFFSET_LEFT}
-};
 
-var createDom = function(canvasAttributes) {
-    $('body').append($('<canvas>', canvasAttributes));
+var createCanvas = function(id, width, height, left, top) {
+    var canvas = $('<canvas>');
+    canvas.attr({id: id, width: width, height: height});
+    canvas.css({position: 'absolute', left: left, top: top});
+    
+    $('body').append(canvas);
 };
-
 
 var testClickEvent = function() {
 
@@ -36,12 +33,21 @@ var testClickEvent = function() {
 	window.em = em;
 	var clickListener = {
 	    react: function(event) {
+		assertions.assertEqual(event.type, 'board.click');
+		assertions.assertEqual(event.value.x, canvasX);
+		assertions.assertEqual(event.value.y, canvasY);
 		counter.count += 1;
 	    }
 	};
 
 	em.addListener('board.click', clickListener);
-	canvasEvent.adaptClickEvent({pageX: documentX, pageY: documentY});
+
+	// emit mouse event.
+	var evt = document.createEvent('MouseEvents');
+	evt.initMouseEvent(
+	    "click", true, true, window, 0, documentX, documentY, documentX, documentY, 
+	    false, false, false, false, 0, null);
+	document.getElementById(canvasId).dispatchEvent(evt);
     };
 
     var clientPostEmit = function _clientPostEmit() {
@@ -57,13 +63,12 @@ var testClickEvent = function() {
 	{offset: offset, canvasClickLoc: canvasClickLoc, canvasId: CANVAS_ID}
     );
     
-    /*
-    casper.page.sendEvent(
+    casper.mouse.processEvent(
 	'click',
-	offset.left + canvasClickLoc.left,
+	offset.left + canvasClickLoc.left, 
 	offset.top + canvasClickLoc.top
     );
-    */
+  
     casper.evaluate(clientPostEmit);
 };
 
@@ -83,8 +88,13 @@ casper.on('page.error', function(msg, trace) {
 });
 
 casper.start('http://localhost:3000/blank').then(function createDomRunner() {
-    casper.evaluate(createDom, {canvasAttributes: CANVAS_ATTRIBUTES});
-    casper.debugHTML();
+    casper.evaluate(createCanvas, {
+	id: CANVAS_ID,
+	width: CANVAS_WIDTH,
+	height: CANVAS_HEIGHT,
+	left: CANVAS_OFFSET_LEFT,
+	top: CANVAS_OFFSET_TOP
+    });
     this.each(tests, function eachTest(self, testCase) {
 	self.then(function runTest() {
 	    testCase();
