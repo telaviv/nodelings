@@ -1,7 +1,9 @@
 var casper = require('casper').create({
     verbose: true,
-    logLevel: 'debug',
+    logLevel: 'debug'
 });
+
+var testing = require('./tests/testing.js').testing;
 
 var CANVAS_OFFSET_TOP = 75;
 var CANVAS_OFFSET_LEFT = 75;
@@ -13,7 +15,7 @@ var createCanvas = function(id, width, height, left, top) {
     var canvas = $('<canvas>');
     canvas.attr({id: id, width: width, height: height});
     canvas.css({position: 'absolute', left: left, top: top});
-    
+
     $('body').append(canvas);
 };
 
@@ -24,9 +26,9 @@ var testClickEvent = function() {
 	var canvasY = canvasClickLoc.top;
 	var documentX = canvasX + offset.left;
 	var documentY = canvasY + offset.top;
-	
+
 	var em = new EventManager();
-	
+
 	var canvasEvent = new CanvasEvent(em, $('#' + canvasId));
 	var counter = {count: 0};
 	window.counter = counter;
@@ -45,7 +47,7 @@ var testClickEvent = function() {
 	// emit mouse event.
 	var evt = document.createEvent('MouseEvents');
 	evt.initMouseEvent(
-	    "click", true, true, window, 0, documentX, documentY, documentX, documentY, 
+	    "click", true, true, window, 0, documentX, documentY, documentX, documentY,
 	    false, false, false, false, 0, null);
 	document.getElementById(canvasId).dispatchEvent(evt);
     };
@@ -59,16 +61,16 @@ var testClickEvent = function() {
     canvasClickLoc = {left: 37, top: 105};
 
     casper.evaluate(
-	clientSetup, 
+	clientSetup,
 	{offset: offset, canvasClickLoc: canvasClickLoc, canvasId: CANVAS_ID}
     );
-    
+
     casper.mouse.processEvent(
 	'click',
-	offset.left + canvasClickLoc.left, 
+	offset.left + canvasClickLoc.left,
 	offset.top + canvasClickLoc.top
     );
-  
+
     casper.evaluate(clientPostEmit);
 };
 
@@ -76,18 +78,19 @@ tests = [
     testClickEvent
 ];
 
-casper.on('page.error', function(msg, trace) {
-    this.echo("Error: " + msg);
-    for (var i = 0; i < trace.length; ++i) {
-	this.echo('\t' + trace[i].file +
-		  ': ' + trace[i].function +
-		  ' line ' + trace[i].line);
-    }
+// set up casper to have additional debugging hooks.
+testing.initialize(casper);
+casper.start().then(function createDomRunner() {
+    //include all the necessary libraries.
+    testing.include(
+	casper,
+	['lib/jquery-1.8.0.min.js',
+	 'assertions.js',
+	 'event_manager.js',
+	 'canvas_event.js']
+    );
 
-    this.die('Client Side Exception', 1);
-});
-
-casper.start('http://localhost:3000/blank').then(function createDomRunner() {
+    //place the canvas in the document
     casper.evaluate(createCanvas, {
 	id: CANVAS_ID,
 	width: CANVAS_WIDTH,
@@ -95,6 +98,7 @@ casper.start('http://localhost:3000/blank').then(function createDomRunner() {
 	left: CANVAS_OFFSET_LEFT,
 	top: CANVAS_OFFSET_TOP
     });
+
     this.each(tests, function eachTest(self, testCase) {
 	self.then(function runTest() {
 	    testCase();
