@@ -2,16 +2,17 @@
  * Module dependencies.
  */
 
-var express = require('express')
-var routes = require('./routes')
-var blank = require('./routes/blank.js')
-var http = require('http')
+var express = require('express');
+var routes = require('./routes');
+var blank = require('./routes/blank.js');
+var http = require('http');
 var path = require('path');
+var config = require('./config').config;
 
 var app = express();
 
 app.configure(function(){
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', config.app_port);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.favicon());
