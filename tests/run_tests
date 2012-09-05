@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mocha tests/server/
-
 cd "$(dirname $0)/.."
+
+mocha tests/server/
 find tests/client/ -name "*_test.js" | xargs -n1 casperjs
