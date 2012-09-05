@@ -2,8 +2,11 @@
  *  Allows creation of a "developer" user. These are people allowed to
  *  make maps.
  */
-var create = function() {
-    return function() {};
-};
+var DevSignup = function(db) {
+    this.db = db;
+}
 
-exports.create = create;
+DevSignup.prototype.signup = function(db) {
+}
+
+exports.DevSignup = DevSignup;
