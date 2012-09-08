@@ -21,7 +21,6 @@
 var expect = require('chai').expect;
 var db = require('../sandbox_db').db;
 var DevSignup = require('../../logic/dev_signup').DevSignup;
-var ObjectID = require('mongodb').ObjectID;
 require('chai').Assertion.includeStack = true;
 
 describe('DevSignup', function() {
@@ -61,7 +60,7 @@ describe('DevSignup', function() {
 		    if (doc.hasOwnProperty(prop)) {
 			var value = doc[prop];
 			if (typeof value  === 'object') {
-			    deepMatch(value, match, function() {});
+ 			    deepMatch(value, match, function() {});
 			} else {
 			    expect(value).to.not.equal(match);
 			}

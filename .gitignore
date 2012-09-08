@@ -1,6 +1,9 @@
 # emacs files
 *~
 \#*\#
+.\#*
 
 # npm stuff
 node_modules
+
+secrets.js
