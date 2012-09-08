@@ -4,20 +4,21 @@ var DevSignup = require('../../logic/dev_signup').DevSignup;
 var ObjectID = require('mongodb').ObjectID;
 require('chai').Assertion.includeStack = true;
 
-var getUser = function(uid, db, fn) {
-    db.collection('dev_user', function(err, collection) {
-	if (err) throw err;
-	collection.findOne({_id: uid}, function (err, item) {
-	    if (err) throw err;
-	    fn(item);
-	})
-    });
-};
-
 describe('DevSignup', function() {
     beforeEach(function() {
 	this.ds = new DevSignup(db);
     });
+
+    var getUser = function(uid, db, fn) {
+	db.collection('dev_user', function(err, collection) {
+	    if (err) throw err;
+	    collection.findOne({_id: uid}, function (err, item) {
+		if (err) throw err;
+		fn(item);
+	    })
+	});
+    };
+
     it('should exist.', function() {
 	expect(this.ds).to.exist
     });
@@ -31,15 +32,27 @@ describe('DevSignup', function() {
 	    });
 	});
 	it('should not store the password in plaintext.', function(done) {
+	    /**
+	     * Recursively searches a document to find out if any of the
+	     * properties equal a primitive. If any do, an exception is thrown.
+	     */
+	    var deepMatch = function(doc, match, fn) {
+		for (var prop in doc) {
+		    if (doc.hasOwnProperty(prop)) {
+			var value = doc[prop];
+			if (typeof value  === 'object') {
+			    deepMatch(value, match, function() {});
+			} else {
+			    expect(value).to.not.equal(match);
+			}
+		    }
+		}
+		fn()
+	    }
 	    var password = 'secret'
 	    this.ds.signup('cheese', password, function(uid) {
 		getUser(uid, db, function(userDoc) {
-		    for(var property in userDoc) {
-			if (userDoc.hasOwnProperty(property)) {
-			    expect(userDoc[property]).to.not.equal(password)
-			}
-		    }
-		    done();
+		    deepMatch(userDoc, password, done);
 		});
 	    });
 	});

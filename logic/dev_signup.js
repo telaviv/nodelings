@@ -10,7 +10,7 @@ DevSignup.prototype.signup = function(username, password, fn) {
     this.db.collection('dev_user', function(err, collection) {
 	if (err) throw err;
 	collection.insert(
-	    {username: username, password: password},
+	    {username: username, authentication: {password: password}},
 	    {safe: true},
 	    function(err, docs) {
 		if (err) throw err;
