@@ -47,7 +47,7 @@ describe('DevSignup', function() {
 			}
 		    }
 		}
-		fn()
+		fn();
 	    }
 	    var password = 'secret'
 	    this.ds.signup('cheese', password, function(uid) {

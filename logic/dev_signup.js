@@ -14,7 +14,7 @@ DevSignup.prototype.signup = function(username, password, fn) {
 	    {safe: true},
 	    function(err, docs) {
 		if (err) throw err;
-		var userDoc = docs[0]
+		var userDoc = docs[0];
 		fn(userDoc._id);
 	    }
 	);
