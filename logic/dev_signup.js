@@ -25,6 +25,12 @@
 
 var bcrypt = require('bcrypt');
 
+var Crypt = require('../util/crypt').Crypt;
+
+/**
+ * @constructor
+ * @param {db} db mongodb instance.
+ */
 var DevSignup = function(db) {
     this.db = db;
 }
@@ -36,7 +42,7 @@ var DevSignup = function(db) {
  * @param {string} password
  * @param {function} cb callback function.
  *
- * @return the encrypted user id.
+ * @return {string} encrypted user id
  */
 DevSignup.prototype.signup = function(username, password, cb) {
     var that = this;
@@ -49,7 +55,9 @@ DevSignup.prototype.signup = function(username, password, cb) {
 	    function(err, docs) {
 		if (err) throw err;
 		var userDoc = docs[0];
-		cb(userDoc._id);
+
+		var encID = (new Crypt()).encryptObjectID(userDoc._id);
+		cb(encID);
 	    }
 	);
     });
