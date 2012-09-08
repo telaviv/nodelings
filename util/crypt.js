@@ -22,8 +22,10 @@
  * Provides utitility methods for encryption and decryption
  */
 
-var secrets = require('../secrets').secrets;
 var crypto = require('crypto');
+var secrets = require('../secrets').secrets;
+
+var ObjectID = require('mongodb').ObjectID;
 
 var CRYPT_TYPE = 'aes256';
 
@@ -80,7 +82,8 @@ Crypt.prototype.encryptObjectID = function(oid) {
  * @return {ObjectID}
  */
 Crypt.prototype.decryptObjectID = function(string) {
-    throw Error('Not Implemented.');
+    var id = this.decrypt(string);
+    return new ObjectID(id);
 };
 
 exports.Crypt = Crypt;

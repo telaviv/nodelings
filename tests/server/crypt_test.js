@@ -52,6 +52,17 @@ describe('Crypt', function() {
 	    expect(ciph).to.be.a('string');
 	});
     });
+    describe('#decryptObjectID', function() {
+	it('should decrypt to the same value as from encryptObjectID', function() {
+	    var oid = new ObjectID(3238493);
+	    var crypt = new Crypt('spin');
+
+	    var ciph = crypt.encryptObjectID(oid);
+	    var deciph = crypt.decryptObjectID(ciph);
+
+	    expect(deciph.id).to.equal(oid.id);
+	});
+    });
 });
 
 
