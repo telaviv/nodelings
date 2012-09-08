@@ -25,6 +25,8 @@
 var secrets = require('../secrets').secrets;
 var crypto = require('crypto');
 
+var CRYPT_TYPE = 'aes256';
+
 /**
  * @constructor
  * @params {string} key cipher key
@@ -43,14 +45,22 @@ var Crypt = function(key) {
  * @return {string}
  */
 Crypt.prototype.encrypt = function(string) {
-    var cipher = crypto.createCipher('aes256', this.key);
+    var cipher = crypto.createCipher(CRYPT_TYPE, this.key);
 
     var ciph = cipher.update(string, 'utf8', 'hex');
     return ciph + cipher.final('hex');
 };
 
-Crypt.prototype.decrypt = function() {
-    throw Error('Not implemented');
+/**
+ * Decrypt an encrypted string.
+ *
+ * @param {string} string
+ * @return {string}
+ */
+Crypt.prototype.decrypt = function(string) {
+    var decipher = crypto.createDecipher(CRYPT_TYPE, this.key);
+    var original = decipher.update(string, 'hex', 'utf8');
+    return original + decipher.final('utf8');
 };
 
 exports.Crypt = Crypt;

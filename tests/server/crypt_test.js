@@ -32,6 +32,15 @@ describe('Crypt', function() {
 	    expect(cryptA.encrypt(msg)).to.not.equal(cryptB.encrypt(msg));
 	});
     });
+    describe('#decrypt()', function() {
+	it('should decrypt an encrypted string.', function() {
+	    var string = 'faces, faces everywhere!'
+	    var crypt = new Crypt('cake');
+	    var ciph = crypt.encrypt(string);
+
+	    expect(crypt.decrypt(ciph)).to.equal(string);
+	});
+    });
 });
 
 
