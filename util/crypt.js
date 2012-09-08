@@ -63,4 +63,24 @@ Crypt.prototype.decrypt = function(string) {
     return original + decipher.final('utf8');
 };
 
+/**
+ * Encrypt a mongodb ObjectID to a dicipherable value.
+ *
+ * @param {ObjectID} oid
+ * @return {string}
+ */
+Crypt.prototype.encryptObjectID = function(oid) {
+    return this.encrypt(oid.id.toString());
+};
+
+/**
+ * Decrypt a string to mongodb ObjectID.
+ *
+ * @param {string} string
+ * @return {ObjectID}
+ */
+Crypt.prototype.decryptObjectID = function(string) {
+    throw Error('Not Implemented.');
+};
+
 exports.Crypt = Crypt;

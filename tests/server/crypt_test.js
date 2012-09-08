@@ -20,6 +20,8 @@
 
 var expect = require('chai').expect;
 var Crypt = require('../../util/crypt').Crypt;
+var ObjectID = require('mongodb').ObjectID;
+
 require('chai').Assertion.includeStack = true;
 
 describe('Crypt', function() {
@@ -39,6 +41,15 @@ describe('Crypt', function() {
 	    var ciph = crypt.encrypt(string);
 
 	    expect(crypt.decrypt(ciph)).to.equal(string);
+	});
+    });
+    describe('#encryptObjectID', function() {
+	it('should turn an ObjectID into a string.', function() {
+	    var oid = new ObjectID(747);
+	    var crypt = new Crypt('tales');
+
+	    var ciph = crypt.encryptObjectID(oid);
+	    expect(ciph).to.be.a('string');
 	});
     });
 });
