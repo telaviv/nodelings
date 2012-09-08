@@ -1,12 +1,31 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app"
-  },
-  "dependencies": {
-    "express": "3.0.0rc1",
-    "jade": "*"
-  }
+    "name": "nodelings",
+    "description": "A mario minis and lemmings inspired video game",
+    "repositories": [
+	{
+            "type": "git",
+            "url": "https://github.com/telaviv/nodelings.git"
+	}
+    ],
+    "maintainers" : [{"name": "Shawn Krisman"}],
+    "version": "0.0.1",
+    "os": ["linux"],
+    "keyword": ["game", "puzzle", "mongodb"],
+    "licenses": [
+	{
+	    "type": "GPLv3",
+	    "url": "http://www.gnu.org/licenses/gpl-3.0.html"
+	}
+    ],
+    "scripts": {
+	"start": "app.js",
+	"test": "tests/run_tests"
+    },
+    "dependencies": {
+	"express": "3.0.0rc1",
+	"jade": "0.27.0",
+	"mongodb": "1.1.6",
+	"mocha": "1.4.2",
+	"chai": "1.2.0"
+    }
 }
