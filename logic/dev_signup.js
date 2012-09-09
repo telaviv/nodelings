@@ -27,6 +27,9 @@ var bcrypt = require('bcrypt');
 
 var Crypt = require('../util/crypt').Crypt;
 
+var UserExistsError = function() {};
+UserExistsError.prototype = new Error();
+
 /**
  * @constructor
  * @param {db} db mongodb instance.
@@ -34,6 +37,8 @@ var Crypt = require('../util/crypt').Crypt;
 var DevSignup = function(db) {
     this.db = db;
 }
+
+DevSignup.UserExistsError = UserExistsError;
 
 /**
  * Creates a user in the db.
@@ -49,18 +54,25 @@ DevSignup.prototype.signup = function(username, password, cb) {
     var that = this;
     that.db.collection('dev_user', function(err, collection) {
 	if (err) throw err;
-	collection.insert(
-	    {username: username,
-	     password_hash: that._hashPassword(password)},
-	    {safe: true},
-	    function(err, docs) {
-		if (err) throw err;
-		var userDoc = docs[0];
-
-		var encID = (new Crypt()).encryptObjectID(userDoc._id);
-		cb(null, encID);
+	collection.findOne({username: username}, function(err, item) {
+	    if (err) throw err;
+	    if (item) {
+		cb(new UserExistsError('username: ' + username + ' already exists.'));
+		return;
 	    }
-	);
+	    collection.insert(
+		{username: username,
+		 password_hash: that._hashPassword(password)},
+		{safe: true},
+		function(err, docs) {
+		    if (err) throw err;
+		    var userDoc = docs[0];
+
+		    var encID = (new Crypt()).encryptObjectID(userDoc._id);
+		    cb(null, encID);
+		}
+	    );
+	});
     });
 };
 

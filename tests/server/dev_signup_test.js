@@ -19,7 +19,7 @@
  */
 
 var expect = require('chai').expect;
-var db = require('../sandbox_db').db;
+var sandboxDB = require('../sandbox_db');
 
 var Crypt = require('../../util/crypt').Crypt;
 var DevSignup = require('../../logic/dev_signup').DevSignup;
@@ -27,8 +27,14 @@ var DevSignup = require('../../logic/dev_signup').DevSignup;
 require('chai').Assertion.includeStack = true;
 
 describe('DevSignup', function() {
-    beforeEach(function() {
-	this.ds = new DevSignup(db);
+    beforeEach(function(done) {
+	var that = this;
+	sandboxDB.create(function(err, db) {
+	    if (err) throw err;
+	    that.db = db;
+	    that.ds = new DevSignup(db);
+	    done();
+	});
     });
 
     var getUser = function(encUID, db, fn) {
@@ -36,38 +42,45 @@ describe('DevSignup', function() {
 	    if (err) throw err;
 	    var uid = (new Crypt()).decryptObjectID(encUID);
 	    collection.findOne({_id: uid}, function (err, item) {
-		debugger;
 		if (err) throw err;
 		fn(item);
 	    })
 	});
     };
 
-    it('should exist.', function() {
-	expect(this.ds).to.exist
+    // generates a unique string
+    var unique = function() {
+	return (new Date()).getTime().toString();
+    }
+
+    it('exists', function() {
+	expect(this.ds).to.exist;
     });
     describe('#signup()', function() {
-	it('should create a user.', function(done) {
-	    this.ds.signup('cheese', 'secret', function(err, encUID) {
+	it('creates a user', function(done) {
+	    var that = this;
+	    that.ds.signup(unique(), 'secret', function(err, encUID) {
 		if (err) throw error;
-		getUser(encUID, db, function(userDoc) {
+		getUser(encUID, that.db, function(userDoc) {
 		    var foundUID = (new Crypt()).encryptObjectID(userDoc._id);
 		    expect(encUID).to.equal(foundUID);
 		    done();
 		});
 	    });
 	});
-	it('should not store the password in plaintext.', function(done) {
+	it('does not store the password in plaintext', function(done) {
+	    var that = this;
 	    /**
 	     * Recursively searches a document to find out if any of the
 	     * properties equal a primitive. If any do, an exception is thrown.
 	     */
 	    var deepMatch = function(doc, match, fn) {
+		var vacuous = function() {};
 		for (var prop in doc) {
 		    if (doc.hasOwnProperty(prop)) {
 			var value = doc[prop];
 			if (typeof value  === 'object') {
- 			    deepMatch(value, match, function() {});
+ 			    deepMatch(value, match, vacuous);
 			} else {
 			    expect(value).to.not.equal(match);
 			}
@@ -76,9 +89,28 @@ describe('DevSignup', function() {
 		fn();
 	    }
 	    var password = 'secret';
-	    this.ds.signup('cheese', password, function(err, encUID) {
-		getUser(encUID, db, function(userDoc) {
+	    that.ds.signup(unique(), password, function(err, encUID) {
+		getUser(encUID, that.db, function(userDoc) {
 		    deepMatch(userDoc, password, done);
+		});
+	    });
+	});
+	it('prevents username collisions', function(done) {
+	    var that = this;
+	    var username = unique();
+	    that.ds.signup(username, 'tea', function(err) {
+		if (err) throw err;
+		that.ds.signup(username, 'biscuits', function(err) {
+		    expect(err).to.exist;
+		    expect(err).to.be.an.instanceof(DevSignup.UserExistsError);
+		    that.db.collection('dev_user', function(err, collection) {
+			if (err) throw err;
+			collection.find({username: username}).toArray(function(err, items) {
+			    if (err) throw err;
+			    expect(items.length).to.equal(1);
+			    done();
+			});
+		    });
 		});
 	    });
 	});

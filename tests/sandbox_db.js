@@ -14,10 +14,18 @@ var db = new Db(config.mongo_name + '-sandbox', server, {native_parser: true});
 /**
  * Destroys all the collections in the db.
  */
-var clear = function(callback) {
-    db.dropDatabase(callback);
+var clear = function(cb) {
+    db.dropDatabase(cb);
+}
+
+/**
+ * Creates an initializes the db instance.
+ */
+var create = function(cb) {
+    require('../logic/db').initialize(db, cb);
 }
 
 exports.db = db;
 exports.clear = clear;
+exports.create = create;
 
