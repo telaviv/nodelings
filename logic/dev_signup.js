@@ -40,7 +40,8 @@ var DevSignup = function(db) {
  *
  * @param {string} username
  * @param {string} password
- * @param {function} cb callback function.
+ * @param {function} cb callback function. Takes 2 args.
+ *                   err, and the encUID.
  *
  * @return {string} encrypted user id
  */
@@ -57,7 +58,7 @@ DevSignup.prototype.signup = function(username, password, cb) {
 		var userDoc = docs[0];
 
 		var encID = (new Crypt()).encryptObjectID(userDoc._id);
-		cb(encID);
+		cb(null, encID);
 	    }
 	);
     });

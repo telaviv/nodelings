@@ -48,7 +48,8 @@ describe('DevSignup', function() {
     });
     describe('#signup()', function() {
 	it('should create a user.', function(done) {
-	    this.ds.signup('cheese', 'secret', function(encUID) {
+	    this.ds.signup('cheese', 'secret', function(err, encUID) {
+		if (err) throw error;
 		getUser(encUID, db, function(userDoc) {
 		    var foundUID = (new Crypt()).encryptObjectID(userDoc._id);
 		    expect(encUID).to.equal(foundUID);
@@ -75,8 +76,8 @@ describe('DevSignup', function() {
 		fn();
 	    }
 	    var password = 'secret';
-	    this.ds.signup('cheese', password, function(uid) {
-		getUser(uid, db, function(userDoc) {
+	    this.ds.signup('cheese', password, function(err, encUID) {
+		getUser(encUID, db, function(userDoc) {
 		    deepMatch(userDoc, password, done);
 		});
 	    });
