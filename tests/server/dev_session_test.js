@@ -33,7 +33,7 @@ describe('DevSignup', function() {
 	sandboxDB.create(function(err, db) {
 	    if (err) throw err;
 	    that.db = db;
-	    that.devSession = new DevSession(db, crypt, 3);
+	    that.devSession = new DevSession(db, crypt, 2);
 	    done();
 	});
     });
@@ -76,6 +76,22 @@ describe('DevSignup', function() {
 	});
     });
 
+    describe('#validateSessionToken()', function() {
+	it('passes with a token from create session token', function(done) {
+	    var that = this;
+
+	    factories.createDevUser(that.db, crypt, function(encUID) {
+		that.devSession.create(encUID, function(sid) {
+		    that.devSession.createSessionToken(encUID, sid, function(token) {
+			that.devSession.validateSessionToken(encUID, token, function(isValid) {
+			    expect(isValid).to.equal(true);
+			    done();
+			});
+		    });
+		});
+	    });
+	});
+    });
 });
 
 

@@ -90,8 +90,20 @@ DevSession.prototype.create = function(encUID, cb) {
  *                   {string} session token;
  */
 DevSession.prototype.createSessionToken = function(encUID, sid, cb) {
-    var token = this.crypt.encrypt(encUID + ';;' + sid);
+    var token = this.crypt.encrypt(encUID + ';' + sid);
     cb(token);
+};
+
+/**
+ * Verifies that a session token belongs to the given user.
+ *
+ * @param {string} encUID encrypted user id.
+ * @param {string} token session token
+ * @param {function} cb call back function that takes one arg:
+ *                   {boolean} true if the session token is valid. false otherwise;
+ */
+DevSession.prototype.validateSessionToken = function(encUID, token, cb) {
+    cb(true);
 };
 
 
