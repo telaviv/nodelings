@@ -19,6 +19,7 @@
  */
 
 var expect = require('chai').expect;
+var factories = require('../testing/factories');
 var sandboxDB = require('../sandbox_db');
 
 var Crypt = require('../../util/crypt').Crypt;
@@ -38,18 +39,6 @@ describe('DevSignup', function() {
 	});
     });
 
-    var getUser = function(encUID, db, fn) {
-	var that = this;
-	db.collection('dev_user', function(err, collection) {
-	    if (err) throw err;
-	    var uid = crypt.decryptObjectID(encUID);
-	    collection.findOne({_id: uid}, function (err, item) {
-		if (err) throw err;
-		fn(item);
-	    })
-	});
-    };
-
     // generates a unique string
     var unique = function() {
 	return (new Date()).getTime().toString();
@@ -63,7 +52,7 @@ describe('DevSignup', function() {
 	    var that = this;
 	    that.ds.signup(unique(), 'secret', function(err, encUID) {
 		if (err) throw error;
-		getUser(encUID, that.db, function(userDoc) {
+		factories.getDevUser(encUID, that.db, crypt, function(userDoc) {
 		    var foundUID = crypt.encryptObjectID(userDoc._id);
 		    expect(encUID).to.equal(foundUID);
 		    done();
@@ -92,7 +81,7 @@ describe('DevSignup', function() {
 	    }
 	    var password = 'secret';
 	    that.ds.signup(unique(), password, function(err, encUID) {
-		getUser(encUID, that.db, function(userDoc) {
+		factories.getDevUser(encUID, that.db, crypt, function(userDoc) {
 		    deepMatch(userDoc, password, done);
 		});
 	    });
