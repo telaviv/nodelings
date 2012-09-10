@@ -46,19 +46,15 @@ describe('DevSignup', function() {
 	it('creates a session in the db', function(done) {
 	    var that = this;
 	    // first lets create the user.
-	    factories.createUser(that.db, crypt, function(encUID) {
+	    factories.createDevUser(that.db, crypt, function(encUID) {
 		// now lets create the session
 		that.devSession.create(encUID, function(sid) {
 		    // lets make sure our encSID is a real id in the db.
-		    that.db.collection('dev_user', function(err, collection) {
-			if (err) throw err;
-			var uid = crypt.decryptObjectID(encUID);
-			collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
+		    factories.getDevUser(encUID, that.db, crypt, function(doc) {
 			    var sessions = doc.sessions;
 			    expect(sessions.length).to.equal(1);
 			    expect(sessions[0]).to.equal(sid);
 			    done();
-			});
 		    });
 		});
 	    });

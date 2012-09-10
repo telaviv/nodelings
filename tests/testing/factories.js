@@ -37,7 +37,7 @@ var unique = function() {
  * @param {cb} callback that takes one arg:
  *             {encUID} encrypted userID
  */
-var createUser = function(db, crypt, cb) {
+var createDevUser = function(db, crypt, cb) {
     var that = this;
 
     var devSignup = new DevSignup(db, crypt);
@@ -47,5 +47,27 @@ var createUser = function(db, crypt, cb) {
     });
 } ;
 
-exports.createUser = createUser;
+/**
+ * Get the entire raw user row.
+ *
+ * @param {encUID} encrypted user id.
+ * @param {db} db mongodb instance.
+ * @param {Crypt} crypt
+ * @param {cb} callback that takes one arg:
+ *             {doc} the devUser document.
+ */
+var getDevUser = function(encUID, db, crypt, cb) {
+    db.collection('dev_user', function(err, collection) {
+	if (err) throw err;
+
+	var uid = crypt.decryptObjectID(encUID);
+	collection.findOne({_id: uid}, function(err, doc) {
+	    if (err) throw err;
+	    cb(doc);
+	});
+    });
+};
+
+exports.createDevUser = createDevUser;
+exports.getDevUser = getDevUser;
 
