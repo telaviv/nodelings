@@ -33,7 +33,6 @@ describe('DevSignup', function() {
 	sandboxDB.create(function(err, db) {
 	    if (err) throw err;
 	    that.db = db;
-	    that.devSignup = new DevSignup(db, crypt);
 	    that.devSession = new DevSession(db, crypt, 3);
 	    done();
 	});
