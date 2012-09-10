@@ -83,9 +83,34 @@ describe('DevSignup', function() {
 	    factories.createDevUser(that.db, crypt, function(encUID) {
 		that.devSession.create(encUID, function(sid) {
 		    that.devSession.createSessionToken(encUID, sid, function(token) {
-			that.devSession.validateSessionToken(encUID, token, function(isValid) {
-			    expect(isValid).to.equal(true);
+			that.devSession.validateSessionToken(token, function(isValid) {
+			    expect(isValid).to.equal(encUID);
 			    done();
+			});
+		    });
+		});
+	    });
+	});
+
+	it('fails when too many sessions have been created', function(done) {
+	    var that = this;
+
+	    factories.createDevUser(that.db, crypt, function(encUID) {
+		that.devSession.create(encUID, function(sid) {
+		    that.devSession.createSessionToken(encUID, sid, function(token) {
+			// the test devSession has two allowable sessions. lets verify
+			// that the token is valid after the creation of one more session.
+			that.devSession.create(encUID, function() {
+			    that.devSession.validateSessionToken(token, function(isValid) {
+				expect(isValid).to.equal(encUID);
+				// this time it should fail
+				that.devSession.create(encUID, function() {
+				    that.devSession.validateSessionToken(token, function(isValid) {
+					expect(isValid).to.equal(null);
+					done();
+				    });
+				});
+			    });
 			});
 		    });
 		});

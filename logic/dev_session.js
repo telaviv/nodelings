@@ -50,14 +50,8 @@ DevSession.prototype.create = function(encUID, cb) {
 	if (err) throw err;
 	collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
 	    var oldSessions = doc.sessions;
-	    var newSessions = oldSessions.splice(0);
-	    // the "session id" is just a timestamp.
-	    var sid = (new Date()).getTime().toString();
-
-	    // if there are too many sessions we need to remove one of them.
-	    if (newSessions.unshift(sid) > that.totalSessions) {
-		newSessions.pop();
-	    }
+	    var newSessions = that._createNewSessionArray(oldSessions);
+	    var sid = newSessions[0];
 
 	    // Now lets insert the entire array back into the doc
 	    collection.findAndModify(
@@ -71,7 +65,7 @@ DevSession.prototype.create = function(encUID, cb) {
 		    // if the sessions have already been modified, we need to
 		    // retry the operation.
 		    if (!doc) {
-			create(encUID, cb);
+			that.create(encUID, cb);
 		    } else {
 			cb(sid);
 		    }
@@ -80,6 +74,24 @@ DevSession.prototype.create = function(encUID, cb) {
 	});
     });
 };
+
+DevSession.prototype._createNewSessionArray = function(oldSessions) {
+    var newSessions = oldSessions.slice();
+    // the "session id" is just a timestamp.
+    var sid = (new Date()).getTime().toString();
+
+    // lets make sure there isn't a preexisting sid with this value.
+    while(oldSessions.indexOf(sid) != -1) {
+	sid = (new Date()).getTime().toString();
+    }
+
+    // if there are too many sessions we need to remove one of them.
+    if (newSessions.unshift(sid) > this.totalSessions) {
+	newSessions.pop();
+    }
+    return newSessions;
+}
+
 
 /**
  * Creates a session token from a encUID and session id.
@@ -97,13 +109,36 @@ DevSession.prototype.createSessionToken = function(encUID, sid, cb) {
 /**
  * Verifies that a session token belongs to the given user.
  *
- * @param {string} encUID encrypted user id.
  * @param {string} token session token
  * @param {function} cb call back function that takes one arg:
- *                   {boolean} true if the session token is valid. false otherwise;
+ *                   {string} the encrypted user id if valid. null otherwise.
  */
-DevSession.prototype.validateSessionToken = function(encUID, token, cb) {
-    cb(true);
+DevSession.prototype.validateSessionToken = function(token, cb) {
+    var that = this;
+
+    var arr = that.crypt.decrypt(token).split(';');
+    var encUID = arr[0];
+    var uid = that.crypt.decryptObjectID(encUID);
+    var sid = arr[1];
+
+    that.db.collection('dev_user', function(err, collection) {
+	if (err) throw err;
+
+	collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
+	    if (err) throw err;
+
+	    // this can happen if uid doesn't belong to a user.
+	    if (!doc) {
+		cb(null);
+	    } else {
+		if (doc.sessions.indexOf(sid) === -1) {
+		    cb(null);
+		} else {
+		    cb(encUID);
+		}
+	    }
+	});
+    });
 };
 
 
