@@ -26,6 +26,8 @@ var Crypt = require('../../util/crypt').Crypt;
 var DevSignup = require('../../logic/dev_signup').DevSignup;
 var DevSession = require('../../logic/dev_session').DevSession;
 
+require('chai').Assertion.includeStack = true;
+
 describe('DevSignup', function() {
     var crypt = new Crypt('hey guyz!');
     beforeEach(function(done) {
@@ -119,7 +121,4 @@ describe('DevSignup', function() {
     });
 });
 
-
-
-require('chai').Assertion.includeStack = true;
 
