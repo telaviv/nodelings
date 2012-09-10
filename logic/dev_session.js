@@ -49,23 +49,32 @@ DevSession.prototype.create = function(encUID, cb) {
     that.db.collection('dev_user', function(err, collection) {
 	if (err) throw err;
 	collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
-	    var sessions = doc.sessions;
+	    var oldSessions = doc.sessions;
+	    var newSessions = oldSessions.splice(0);
 	    // the "session id" is just a timestamp.
-	    var timestamp = (new Date()).getTime().toString();
+	    var sid = (new Date()).getTime().toString();
 
 	    // if there are too many sessions we need to remove one of them.
-	    if (sessions.unshift(timestamp) > that.totalSessions) {
-		sessions.pop();
+	    if (newSessions.unshift(sid) > that.totalSessions) {
+		newSessions.pop();
 	    }
 
 	    // Now lets insert the entire array back into the doc
-	    collection.update(
-		{_id: uid},
-		{$set: {sessions: sessions}},
-		{safe: true},
-		function(err) {
+	    collection.findAndModify(
+		{_id: uid, sessions: oldSessions},
+		{},
+		{$set: {sessions: newSessions}},
+		{},
+		function(err, doc) {
 		    if (err) throw err;
-		    cb(timestamp);
+
+		    // if the sessions have already been modified, we need to
+		    // retry the operation.
+		    if (!doc) {
+			create(encUID, cb);
+		    } else {
+			cb(sid);
+		    }
 		}
 	    );
 	});
