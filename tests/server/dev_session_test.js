@@ -19,6 +19,7 @@
  */
 
 var expect = require('chai').expect;
+var factories = require('../testing/factories');
 var sandboxDB = require('../sandbox_db');
 
 var Crypt = require('../../util/crypt').Crypt;
@@ -37,10 +38,6 @@ describe('DevSignup', function() {
 	});
     });
 
-    // generates a unique string
-    var unique = function() {
-	return (new Date()).getTime().toString();
-    }
     it('exists', function() {
 	expect(this.devSession).to.exist;
     });
@@ -48,8 +45,7 @@ describe('DevSignup', function() {
 	it('creates a session in the db', function(done) {
 	    var that = this;
 	    // first lets create the user.
-	    that.devSignup.signup(unique(), 'secret', function(err, encUID) {
-		if (err) throw err;
+	    factories.createUser(that.db, function(encUID) {
 		// now lets create the session
 		that.devSession.create(encUID, function(sid) {
 		    // lets make sure our encSID is a real id in the db.
