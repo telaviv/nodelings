@@ -23,7 +23,6 @@
  */
 
 var crypto = require('crypto');
-var secrets = require('../secrets').secrets;
 
 var ObjectID = require('mongodb').ObjectID;
 
@@ -34,11 +33,11 @@ var CRYPT_TYPE = 'aes256';
  * @params {string} key cipher key
  */
 var Crypt = function(key) {
-    if (!key && !secrets.cipher_key) {
+    if (!key) {
 	throw Error('We need a key to do cryptography!');
     }
 
-    this.key = key || secrets.cipher_key;
+    this.key = key;
 };
 /**
  * Encrypt a string to a dicipherable value.
