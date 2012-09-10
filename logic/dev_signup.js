@@ -62,7 +62,8 @@ DevSignup.prototype.signup = function(username, password, cb) {
 	    }
 	    collection.insert(
 		{username: username,
-		 password_hash: that._hashPassword(password)},
+		 password_hash: that._hashPassword(password),
+		 sessions: []},
 		{safe: true},
 		function(err, docs) {
 		    if (err) throw err;

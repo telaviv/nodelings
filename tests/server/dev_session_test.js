@@ -32,12 +32,40 @@ describe('DevSignup', function() {
 	    if (err) throw err;
 	    that.db = db;
 	    that.devSignup = new DevSignup(db);
-	    that.devSession = new DevSession(db);
+	    that.devSession = new DevSession(db, new Crypt(), 3);
 	    done();
 	});
     });
+
+    // generates a unique string
+    var unique = function() {
+	return (new Date()).getTime().toString();
+    }
     it('exists', function() {
 	expect(this.devSession).to.exist;
+    });
+    describe('#create()', function() {
+	it('creates a session in the db', function(done) {
+	    var that = this;
+	    // first lets create the user.
+	    that.devSignup.signup(unique(), 'secret', function(err, encUID) {
+		if (err) throw err;
+		// now lets create the session
+		that.devSession.create(encUID, function(sid) {
+		    // lets make sure our encSID is a real id in the db.
+		    that.db.collection('dev_user', function(err, collection) {
+			if (err) throw err;
+			var uid = (new Crypt()).decryptObjectID(encUID);
+			collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
+			    var sessions = doc.sessions;
+			    expect(sessions.length).to.equal(1);
+			    expect(sessions[0]).to.equal(sid);
+			    done();
+			});
+		    });
+		});
+	    });
+	});
     });
 });
 

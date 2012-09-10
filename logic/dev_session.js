@@ -23,15 +23,56 @@
  * Also provides utility methods for dealing with sessions.
  */
 
-var Crypt = require('../util/crypt').Crypt;
-
 /**
  * @constructor
  * @param {db} db mongdb instance.
+ * @param {Crypt} crypt
+ * @param {number} totalSessions maximum amount of sessions for a dev user.
  */
 
-var DevSession = function(db) {
+var DevSession = function(db, crypt, totalSessions) {
     this.db = db;
+    this.crypt = crypt;
+    this.totalSessions = totalSessions;
 };
+
+/**
+ * Creates a new session for the user.
+ *
+ * @param {string} encUID
+ * @param {function} cb callback. Should take one arg:
+ *                   {string} sid the session id.
+ */
+DevSession.prototype.create = function(encUID, cb) {
+    var that = this;
+    var uid = that.crypt.decryptObjectID(encUID);
+    that.db.collection('dev_user', function(err, collection) {
+	if (err) throw err;
+	collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
+	    var sessions = doc.sessions;
+	    // the "session id" is just a timestamp.
+	    var timestamp = (new Date()).getTime().toString();
+
+	    // if there are too many sessions we need to remove one of them.
+	    if (sessions.unshift(timestamp) > that.totalSessions) {
+		sessions.pop();
+	    }
+
+	    // Now lets insert the entire array back into the doc
+	    collection.update(
+		{_id: uid},
+		{$set: {sessions: sessions}},
+		{safe: true},
+		function(err) {
+		    if (err) throw err;
+		    cb(timestamp);
+		}
+	    );
+	});
+    });
+};
+
+
+
 
 exports.DevSession = DevSession;
