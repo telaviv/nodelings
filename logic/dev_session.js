@@ -81,7 +81,18 @@ DevSession.prototype.create = function(encUID, cb) {
     });
 };
 
-
+/**
+ * Creates a session token from a encUID and session id.
+ *
+ * @param {string} encUID encrypted user id.
+ * @param {string} sid session id.
+ * @param {function} cb call back function that takes one arg:
+ *                   {string} session token;
+ */
+DevSession.prototype.createSessionToken = function(encUID, sid, cb) {
+    var token = this.crypt.encrypt(encUID + ';;' + sid);
+    cb(token);
+};
 
 
 exports.DevSession = DevSession;

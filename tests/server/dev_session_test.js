@@ -41,6 +41,7 @@ describe('DevSignup', function() {
     it('exists', function() {
 	expect(this.devSession).to.exist;
     });
+
     describe('#create()', function() {
 	it('creates a session in the db', function(done) {
 	    var that = this;
@@ -59,6 +60,22 @@ describe('DevSignup', function() {
 	    });
 	});
     });
+
+    describe('#createSessionToken()', function() {
+	it('creates a string from a session id and encUID', function(done) {
+	    var that = this;
+
+	    factories.createDevUser(that.db, crypt, function(encUID) {
+		that.devSession.create(encUID, function(sid) {
+		    that.devSession.createSessionToken(encUID, sid, function(token) {
+			expect(token).to.be.a('string');
+			done();
+		    });
+		});
+	    });
+	});
+    });
+
 });
 
 
