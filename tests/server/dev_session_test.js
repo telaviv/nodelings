@@ -23,7 +23,6 @@ var factories = require('../testing/factories');
 var sandboxDB = require('../sandbox_db');
 
 var Crypt = require('../../util/crypt').Crypt;
-var DevSignup = require('../../logic/dev_signup').DevSignup;
 var DevSession = require('../../logic/dev_session').DevSession;
 
 require('chai').Assertion.includeStack = true;
