@@ -33,13 +33,14 @@ var unique = function() {
  * Creates a user.
  *
  * @param {db} db mongodb instance.
+ * @param {Crypt} crypt
  * @param {cb} callback that takes one arg:
  *             {encUID} encrypted userID
  */
-var createUser = function(db, cb) {
+var createUser = function(db, crypt, cb) {
     var that = this;
 
-    var devSignup = new DevSignup(db);
+    var devSignup = new DevSignup(db, crypt);
     devSignup.signup(unique(), 'password', function(err, encUID) {
 	if (err) throw err;
 	cb(encUID);

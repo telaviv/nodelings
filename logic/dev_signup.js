@@ -25,17 +25,17 @@
 
 var bcrypt = require('bcrypt');
 
-var Crypt = require('../util/crypt').Crypt;
-
 var UserExistsError = function() {};
 UserExistsError.prototype = new Error();
 
 /**
  * @constructor
  * @param {db} db mongodb instance.
+ * @param {Crypt} crypt
  */
-var DevSignup = function(db) {
+var DevSignup = function(db, crypt) {
     this.db = db;
+    this.crypt = crypt;
 }
 
 DevSignup.UserExistsError = UserExistsError;
@@ -69,7 +69,7 @@ DevSignup.prototype.signup = function(username, password, cb) {
 		    if (err) throw err;
 		    var userDoc = docs[0];
 
-		    var encID = (new Crypt()).encryptObjectID(userDoc._id);
+		    var encID = that.crypt.encryptObjectID(userDoc._id);
 		    cb(null, encID);
 		}
 	    );

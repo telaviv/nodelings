@@ -27,20 +27,22 @@ var DevSignup = require('../../logic/dev_signup').DevSignup;
 require('chai').Assertion.includeStack = true;
 
 describe('DevSignup', function() {
+    var crypt = new Crypt('testing');
     beforeEach(function(done) {
 	var that = this;
 	sandboxDB.create(function(err, db) {
 	    if (err) throw err;
 	    that.db = db;
-	    that.ds = new DevSignup(db);
+	    that.ds = new DevSignup(db, crypt);
 	    done();
 	});
     });
 
     var getUser = function(encUID, db, fn) {
+	var that = this;
 	db.collection('dev_user', function(err, collection) {
 	    if (err) throw err;
-	    var uid = (new Crypt()).decryptObjectID(encUID);
+	    var uid = crypt.decryptObjectID(encUID);
 	    collection.findOne({_id: uid}, function (err, item) {
 		if (err) throw err;
 		fn(item);
@@ -62,7 +64,7 @@ describe('DevSignup', function() {
 	    that.ds.signup(unique(), 'secret', function(err, encUID) {
 		if (err) throw error;
 		getUser(encUID, that.db, function(userDoc) {
-		    var foundUID = (new Crypt()).encryptObjectID(userDoc._id);
+		    var foundUID = crypt.encryptObjectID(userDoc._id);
 		    expect(encUID).to.equal(foundUID);
 		    done();
 		});

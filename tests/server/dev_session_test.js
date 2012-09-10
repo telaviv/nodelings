@@ -27,13 +27,14 @@ var DevSignup = require('../../logic/dev_signup').DevSignup;
 var DevSession = require('../../logic/dev_session').DevSession;
 
 describe('DevSignup', function() {
+    var crypt = new Crypt('hey guyz!');
     beforeEach(function(done) {
 	var that = this;
 	sandboxDB.create(function(err, db) {
 	    if (err) throw err;
 	    that.db = db;
-	    that.devSignup = new DevSignup(db);
-	    that.devSession = new DevSession(db, new Crypt(), 3);
+	    that.devSignup = new DevSignup(db, crypt);
+	    that.devSession = new DevSession(db, crypt, 3);
 	    done();
 	});
     });
@@ -45,13 +46,13 @@ describe('DevSignup', function() {
 	it('creates a session in the db', function(done) {
 	    var that = this;
 	    // first lets create the user.
-	    factories.createUser(that.db, function(encUID) {
+	    factories.createUser(that.db, crypt, function(encUID) {
 		// now lets create the session
 		that.devSession.create(encUID, function(sid) {
 		    // lets make sure our encSID is a real id in the db.
 		    that.db.collection('dev_user', function(err, collection) {
 			if (err) throw err;
-			var uid = (new Crypt()).decryptObjectID(encUID);
+			var uid = crypt.decryptObjectID(encUID);
 			collection.findOne({_id: uid}, {sessions: 1}, function(err, doc) {
 			    var sessions = doc.sessions;
 			    expect(sessions.length).to.equal(1);
