@@ -5,6 +5,7 @@
 var express = require('express');
 var routes = require('./routes');
 var blank = require('./routes/blank.js');
+var signup = require('./routes/signup.js');
 var http = require('http');
 var path = require('path');
 var config = require('./config').config;
@@ -30,6 +31,7 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/blank', blank.blank);
+app.get('/signup', signup.signup);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
