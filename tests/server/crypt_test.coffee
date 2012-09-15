@@ -24,21 +24,21 @@ require('chai').Assertion.includeStack = true;
 
 describe 'Crypt', ->
     describe '#encrypt()', ->
-        it 'should not easily have a collision between keys', () ->
+        it 'should not easily have a collision between keys', ->
             cryptA = new Crypt('jelly');
             cryptB = new Crypt('belly');
             msg = 'cats';
 
             expect(cryptA.encrypt(msg)).to.not.equal(cryptB.encrypt(msg));
-    describe '#decrypt()', () ->
-    	it 'should decrypt an encrypted string.', () ->
+    describe '#decrypt()', ->
+    	it 'should decrypt an encrypted string.', ->
     	    string = 'faces, faces everywhere!'
     	    crypt = new Crypt('cake');
     	    ciph = crypt.encrypt(string);
 
     	    expect(crypt.decrypt(ciph)).to.equal(string);
     describe '#encryptObjectID', ->
-    	it 'should turn an ObjectID into a string.', () ->
+    	it 'should turn an ObjectID into a string.', ->
     	    oid = new ObjectID(747);
     	    crypt = new Crypt('tales');
 
