@@ -20,7 +20,7 @@
 
 expect = require('chai').expect
 factories = require('../testing/factories')
-sandboxDB = require('../sandbox_db')
+sandboxDB = require('../testing/sandbox_db')
 
 Crypt = require('../../util/crypt').Crypt
 DevSession = require('../../logic/dev_session').DevSession
