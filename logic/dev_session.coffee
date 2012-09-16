@@ -53,21 +53,22 @@ DevSession.prototype.create = (encUID, cb) ->
         newSessions = @_createNewSessionArray(oldSessions)
         sid = newSessions[0]
 
-        # Now lets insert the entire array back into the doc
-        collection.findAndModify(
-          {_id: uid, sessions: oldSessions},
-          {},
-          {$set: {sessions: newSessions}},
-          {},
-          (err, doc) =>
+        # callback for findAndModify
+        getDoc = =>
             if err then throw err
 
-            # if the sessions have already been modified, we need to
-            # retry the operation.
             if not doc
+              # if the sessions have already been modified, we need to
+              # retry the operation.
               @create(encUID, cb)
             else
               cb(sid)
+
+        # Now lets insert the entire array back into the doc
+        collection.findAndModify(
+          {_id: uid, sessions: oldSessions}, {},
+          {$set: {sessions: newSessions}}, {},
+          getDoc
         )
 
 DevSession.prototype._createNewSessionArray = (oldSessions) ->
