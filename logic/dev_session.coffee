@@ -45,13 +45,12 @@ DevSession = (db, crypt, totalSessions) ->
 #                    {string} sid the session id.
 ###
 DevSession.prototype.create = (encUID, cb) ->
-    that = this
-    uid = that.crypt.decryptObjectID(encUID)
-    that.db.collection 'dev_user', (err, collection) ->
+    uid = @crypt.decryptObjectID(encUID)
+    @db.collection 'dev_user', (err, collection) =>
       if err then throw err
-      collection.findOne {_id: uid}, {sessions: 1}, (err, doc) ->
+      collection.findOne {_id: uid}, {sessions: 1}, (err, doc) =>
         oldSessions = doc.sessions
-        newSessions = that._createNewSessionArray(oldSessions)
+        newSessions = @_createNewSessionArray(oldSessions)
         sid = newSessions[0]
 
         # Now lets insert the entire array back into the doc
@@ -60,13 +59,13 @@ DevSession.prototype.create = (encUID, cb) ->
           {},
           {$set: {sessions: newSessions}},
           {},
-          (err, doc) ->
+          (err, doc) =>
             if err then throw err
 
             # if the sessions have already been modified, we need to
             # retry the operation.
             if not doc
-              that.create(encUID, cb)
+              @create(encUID, cb)
             else
               cb(sid)
         )
@@ -107,17 +106,15 @@ DevSession.prototype.createSessionToken = (encUID, sid, cb) ->
 #                   {string} the encrypted user id if valid. null otherwise.
 ###
 DevSession.prototype.validateSessionToken = (token, cb) ->
-    that = this
-
-    arr = that.crypt.decrypt(token).split(TOKEN_SEPARATION_CHAR)
+    arr = @crypt.decrypt(token).split(TOKEN_SEPARATION_CHAR)
     encUID = arr[0]
-    uid = that.crypt.decryptObjectID(encUID)
+    uid = @crypt.decryptObjectID(encUID)
     sid = arr[1]
 
-    that.db.collection 'dev_user', (err, collection) ->
+    @db.collection 'dev_user', (err, collection) =>
       if err then throw err
 
-      collection.findOne {_id: uid}, {sessions: 1}, (err, doc) ->
+      collection.findOne {_id: uid}, {sessions: 1}, (err, doc) =>
         if err then throw err
 
         # this can happen if uid doesn't belong to a user.

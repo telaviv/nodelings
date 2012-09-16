@@ -28,7 +28,6 @@
 #  @param {db} db mongodb instance
 #  @param {function} cb callback
 ###
-
 initialize = (db, cb) ->
   db.ensureIndex(
     'dev_user',
