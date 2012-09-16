@@ -85,6 +85,4 @@ DevSignup.prototype.signup = (username, password, cb) ->
 DevSignup.prototype._hashPassword = (password) ->
     return bcrypt.hashSync(password, 8)
 
-
-
 exports.DevSignup = DevSignup
