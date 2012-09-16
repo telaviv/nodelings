@@ -2,6 +2,7 @@
 *~
 \#*\#
 .\#*
+tests/server/*.js
 
 # npm stuff
 node_modules

@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 ###
+
 expect = require('chai').expect
 factories = require('../testing/factories')
 sandboxDB = require('../sandbox_db')
@@ -59,7 +60,7 @@ describe 'DevSignup', ->
               expect(token).to.be.a('string')
               done()
 
-    describe '#validateSessionToken', ->
+    describe '#validateSessionToken()', ->
       it 'passes with a token from create session token', (done) ->
         factories.createDevUser @db, crypt, (encUID) =>
           @devSession.create encUID, (sid) =>
