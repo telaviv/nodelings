@@ -22,26 +22,26 @@
 # Creates a db on an alias used just for unit tests.
 ###
 
-config = require('../config').config;
+config = require('../config').config
 mongo = require('mongodb')
-Server = mongo.Server;
-Db = mongo.Db;
+Server = mongo.Server
+Db = mongo.Db
 
 server = new Server(
-    config.mongo_host, config.mongo_port, {auto_reconnect: true});
-db = new Db(config.mongo_name + '-sandbox', server, {native_parser: true});
+    config.mongo_host, config.mongo_port, {auto_reconnect: true})
+db = new Db(config.mongo_name + '-sandbox', server, {native_parser: true})
 
 ###
 # Destroys all the collections in the db.
 ###
-clear = (cb) -> db.dropDatabase(cb);
+clear = (cb) -> db.dropDatabase(cb)
 
 ###
 # Creates an initializes the db instance.
 ###
-create = (cb) -> require('../logic/db').initialize(db, cb);
+create = (cb) -> require('../logic/db').initialize(db, cb)
 
 
-exports.db = db;
-exports.clear = clear;
-exports.create = create;
+exports.db = db
+exports.clear = clear
+exports.create = create
