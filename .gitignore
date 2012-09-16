@@ -3,7 +3,9 @@
 \#*\#
 .\#*
 tests/server/*.js
+tests/testing/*.js
 logic/*.js
+app.js
 
 # npm stuff
 node_modules
