@@ -11,3 +11,4 @@ app.js
 node_modules
 
 secrets.js
+routes/tests.js
