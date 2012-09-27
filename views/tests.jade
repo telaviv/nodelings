@@ -20,11 +20,11 @@ extends layout
 
 block append head
   link(rel='stylesheet', href='/stylesheets/mocha.css')
-  script(src='/javascripts/lib/mocha.js')
-  script(src='/javascripts/lib/chai.js')
+  script(src='/js/lib/mocha.js')
+  script(src='/js/lib/chai.js')
   script mocha.setup('bdd');
-  script(src='/javascripts/tests/event-manager-spec.js')
-  script(src='/javascripts/tests/canvas-event-spec.js')
+  script(src='/js/tests/event-manager-spec.js')
+  script(src='/js/tests/canvas-event-spec.js')
   script
     $(function() {mocha.run();});
 

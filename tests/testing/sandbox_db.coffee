@@ -22,7 +22,7 @@
 # Creates a db on an alias used just for unit tests.
 ###
 
-config = require('../config').config
+config = require('../../config').config
 mongo = require('mongodb')
 Server = mongo.Server
 Db = mongo.Db
@@ -39,7 +39,7 @@ clear = (cb) -> db.dropDatabase(cb)
 ###
 # Creates an initializes the db instance.
 ###
-create = (cb) -> require('../logic/db').initialize(db, cb)
+create = (cb) -> require('../../logic/db').initialize(db, cb)
 
 
 exports.db = db

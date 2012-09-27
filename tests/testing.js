@@ -23,7 +23,7 @@ var testing = {
      * Injects various libraries into page.
      */
     include: function _include(casper, includes) {
-	var rootDir = 'public/javascripts/';
+	var rootDir = 'public/js/';
 	for (var i = 0; i < includes.length; ++i) {
 	    if(!casper.page.injectJs(rootDir + includes[i])) {
 		casper.die('Could not find include "' + includes[i] + '"');
