@@ -1,0 +1,12 @@
+#!/bin/bash
+
+bash --rcfile sandbox-rc
+cur="$(dirname $0)"
+pid_file="$cur/app.pid"
+if [ -e $pid_file ]; then
+    pid=$(cat $pid_file)
+    kill $pid
+    rm $pid_file
+fi
+
+echo "peace!"

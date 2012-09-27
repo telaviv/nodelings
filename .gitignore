@@ -5,6 +5,7 @@
 tests/server/*.js
 tests/testing/*.js
 logic/*.js
+logs
 app.js
 
 # npm stuff
