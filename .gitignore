@@ -7,6 +7,7 @@ tests/testing/*.js
 logic/*.js
 logs
 app.js
+server.js
 
 # npm stuff
 node_modules

@@ -2,33 +2,35 @@
     "name": "nodelings",
     "description": "A mario minis and lemmings inspired video game",
     "repositories": [
-	{
+        {
             "type": "git",
             "url": "https://github.com/telaviv/nodelings.git"
-	}
+        }
     ],
     "maintainers" : [{"name": "Shawn Krisman"}],
     "version": "0.0.1",
     "os": ["linux"],
     "keyword": ["game", "puzzle", "mongodb"],
     "licenses": [
-	{
-	    "type": "GPLv3",
-	    "url": "http://www.gnu.org/licenses/gpl-3.0.html"
-	}
+        {
+            "type": "GPLv3",
+            "url": "http://www.gnu.org/licenses/gpl-3.0.html"
+        }
     ],
     "scripts": {
-	"start": "app.js",
-	"test": "tests/run_tests"
+        "start": "app.js",
+        "test": "tests/run_tests"
     },
     "dependencies": {
-	"express": "3.0.0rc1",
-	"jade": "0.27.0",
-	"mongodb": "1.1.6",
-	"mocha": "1.4.2",
-	"chai": "1.2.0",
-	"bcrypt": "0.7.2",
-	"cookies": "0.3.1",
-	"coffee-script": "1.3.3"
+        "express": "3.0.0rc1",
+        "jade": "0.27.0",
+        "mongodb": "1.1.6",
+        "mocha": "1.4.2",
+        "chai": "1.2.0",
+        "bcrypt": "0.7.2",
+        "cookies": "0.3.1",
+        "coffee-script": "1.3.3",
+        "sinon": "1.4.2",
+        "sinon-chai": "2.1.2"
     }
 }
