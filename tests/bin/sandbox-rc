@@ -5,5 +5,5 @@ log_dir="$cur/../../logs"
 if [ ! -d $log_dir ]; then
     mkdir $log_dir
 fi
-PORT=3001 SANDBOX=true coffee "$cur/../../app.coffee" 2>&1 > "$log_dir/sandbox.out" &
+PORT=3001 SANDBOX=1 coffee "$cur/../../app.coffee" 2>&1 > "$log_dir/sandbox.out" &
 echo "$!" > "$cur/app.pid"
