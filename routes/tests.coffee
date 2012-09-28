@@ -22,6 +22,14 @@
 # GET test page
 ###
 
-exports.tests = (req, res) ->
+class TestServlet
+  constructor: ->
+    @routes = [
+      {match: '/tests', route: @tests}
+    ]
+
+  tests: (req, res) ->
     env = { title: 'Nodeling Tests' }
     res.render('tests', env)
+
+exports.TestServlet = TestServlet

@@ -52,7 +52,10 @@ app.configure 'development', ->
 app.get('/', routes.index);
 app.get('/blank', blank.blank);
 app.get('/signup', signup.signup);
-app.get('/tests', tests.tests);
+
+testServlet = new (require('./routes/tests').TestServlet)()
+for router in testServlet.routes
+  app.get router.match, router.route
 
 http.createServer(app).listen app.get('port'), ->
   console.log("Express server listening on port " + app.get('port'));
