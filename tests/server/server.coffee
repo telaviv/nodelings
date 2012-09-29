@@ -18,14 +18,25 @@
 ###
 
 chai = require('chai')
+sinon = require('sinon')
 sinonChai = require('sinon-chai')
 expect = chai.expect
 
-Server = require('../../server')
+Server = require('../../server').Server
 
 chai.Assertion.includeStack = true
 chai.use(sinonChai)
 
 describe 'Server', ->
-  it 'can be created', ->
-    server = new Server()
+  it 'assigns a single route correctly', ->
+    match = '/fake'
+    route = sinon.spy()
+    servlet = {routes: [{match: match, route: route}]}
+
+    app = {get: ->}
+    spy = sinon.spy(app, 'get')
+    spy.withArgs(match, route)
+
+    new Server(app, [servlet])
+
+    expect(spy.withArgs(match, route)).to.have.been.calledOnce
