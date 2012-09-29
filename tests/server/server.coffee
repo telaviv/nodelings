@@ -40,3 +40,17 @@ describe 'Server', ->
     new Server(app, [servlet])
 
     expect(spy.withArgs(match, route)).to.have.been.calledOnce
+
+  it 'assigns multiple routes correctly', ->
+    app = {get: ->}
+    spy = sinon.spy(app, 'get')
+    routes = []
+    for i in [1..3]
+      obj = {match: '/fake' + i, route: i}
+      routes.push(obj)
+      spy.withArgs(obj.match, obj.route)
+
+    new Server(app, [{routes: routes}])
+
+    for obj in routes
+      expect(spy.withArgs(obj.match, obj.route)).to.have.been.calledOnce
