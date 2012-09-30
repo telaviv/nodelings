@@ -37,7 +37,7 @@ describe 'Server', ->
     spy = sinon.spy(app, 'get')
     spy.withArgs(match, route)
 
-    new Server(app, [servlet])
+    new Server([servlet], app)
 
     expect(spy.withArgs(match, route)).to.have.been.calledOnce
 
@@ -50,7 +50,7 @@ describe 'Server', ->
       routes.push(obj)
       spy.withArgs(obj.match, obj.route)
 
-    new Server(app, [{routes: routes}])
+    new Server([{routes: routes}], app)
 
     for obj in routes
       expect(spy.withArgs(obj.match, obj.route)).to.have.been.calledOnce
@@ -64,7 +64,7 @@ describe 'Server', ->
     routes.push({match: '/fake-get', route: sinon.spy(), method: 'get'})
     routes.push({match: '/fake-post', route: sinon.spy(), method: 'post'})
 
-    new Server(app, [{routes: routes}])
+    new Server([{routes: routes}], app)
 
     expect(getSpy).to.have.been.calledOnce
     expect(getSpy).to.have.been.calledWithExactly(
@@ -79,7 +79,7 @@ describe 'Server', ->
     app = {get: ->}
     spy = sinon.spy(app, 'get')
 
-    new Server(app, [servletA, servletB])
+    new Server([servletA, servletB], app)
 
     routeA = servletA.routes[0]
     routeB = servletB.routes[0]

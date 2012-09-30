@@ -18,7 +18,7 @@
 ###
 
 class Server
-  constructor: (@app, servlets) ->
+  constructor: (servlets, @app) ->
     for servlet in servlets
       for route in servlet.routes
         @app[route.method] route.match, route.route
