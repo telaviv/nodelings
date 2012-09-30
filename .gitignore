@@ -8,6 +8,7 @@ logic/*.js
 logs
 app.js
 server.js
+server_factory.js
 
 # npm stuff
 node_modules
