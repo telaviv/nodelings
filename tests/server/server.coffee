@@ -72,3 +72,17 @@ describe 'Server', ->
     expect(postSpy).to.have.been.calledOnce
     expect(postSpy).to.have.been.calledWithExactly(
       routes[1].match, routes[1].route)
+
+  it 'handles multiple servlets', ->
+    servletA = {routes: [{match: '/fake-A', route: 'A', method: 'get'}]}
+    servletB = {routes: [{match: '/fake-B', route: 'B', method: 'get'}]}
+    app = {get: ->}
+    spy = sinon.spy(app, 'get')
+
+    new Server(app, [servletA, servletB])
+
+    routeA = servletA.routes[0]
+    routeB = servletB.routes[0]
+
+    expect(spy.withArgs(routeA.match, routeA.route)).to.have.been.calledOnce
+    expect(spy.withArgs(routeB.match, routeB.route)).to.have.been.calledOnce
