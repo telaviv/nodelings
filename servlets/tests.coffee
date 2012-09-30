@@ -25,11 +25,11 @@
 class TestServlet
   constructor: ->
     @routes = [
-      {match: '/tests', route: @tests}
+      {match: '/tests', route: @tests, method: 'get'}
     ]
 
   tests: (req, res) ->
     env = { title: 'Nodeling Tests' }
     res.render('tests', env)
 
-exports.TestServlet = TestServlet
+exports.servlet = TestServlet
