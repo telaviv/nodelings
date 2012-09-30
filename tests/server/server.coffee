@@ -31,7 +31,7 @@ describe 'Server', ->
   it 'assigns a single route correctly', ->
     match = '/fake'
     route = sinon.spy()
-    servlet = {routes: [{match: match, route: route}]}
+    servlet = {routes: [{match: match, route: route, method: 'get'}]}
 
     app = {get: ->}
     spy = sinon.spy(app, 'get')
@@ -46,7 +46,7 @@ describe 'Server', ->
     spy = sinon.spy(app, 'get')
     routes = []
     for i in [1..3]
-      obj = {match: '/fake' + i, route: i}
+      obj = {match: '/fake' + i, route: i, method: 'get'}
       routes.push(obj)
       spy.withArgs(obj.match, obj.route)
 
@@ -54,3 +54,21 @@ describe 'Server', ->
 
     for obj in routes
       expect(spy.withArgs(obj.match, obj.route)).to.have.been.calledOnce
+
+  it 'selectively chooses http type based on the method', ->
+    getSpy = sinon.spy()
+    postSpy = sinon.spy()
+    app = {get: getSpy, post: postSpy}
+
+    routes = []
+    routes.push({match: '/fake-get', route: sinon.spy(), method: 'get'})
+    routes.push({match: '/fake-post', route: sinon.spy(), method: 'post'})
+
+    new Server(app, [{routes: routes}])
+
+    expect(getSpy).to.have.been.calledOnce
+    expect(getSpy).to.have.been.calledWithExactly(
+      routes[0].match, routes[0].route)
+    expect(postSpy).to.have.been.calledOnce
+    expect(postSpy).to.have.been.calledWithExactly(
+      routes[1].match, routes[1].route)

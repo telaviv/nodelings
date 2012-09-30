@@ -21,6 +21,6 @@ class Server
   constructor: (@app, servlets) ->
     routes = servlets[0].routes
     for route in routes
-      @app.get route.match, route.route
+      @app[route.method] route.match, route.route
 
 exports.Server = Server
