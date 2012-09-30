@@ -17,10 +17,20 @@
 # along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
+###
+# This class is responsible for all http routing and processing.
+###
 class Server
-  constructor: (servlets, @app) ->
+  constructor: (servlets, @app, @http, @port) ->
     for servlet in servlets
       for route in servlet.routes
         @app[route.method] route.match, route.route
+
+  ###
+  # Permanently listens for http requests.
+  ###
+  run: ->
+    @http.createServer(@app).listen @port, ->
+      console.log "Express server listening on port " + @port
 
 exports.Server = Server

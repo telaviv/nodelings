@@ -86,3 +86,17 @@ describe 'Server', ->
 
     expect(spy.withArgs(routeA.match, routeA.route)).to.have.been.calledOnce
     expect(spy.withArgs(routeB.match, routeB.route)).to.have.been.calledOnce
+
+  describe 'run', ->
+    it 'listens on the servlet created by createServer', ->
+      port = 8080
+      listenSpy = sinon.spy()
+      server = {listen: listenSpy}
+      createServerStub = sinon.stub().returns(server)
+      http = {createServer: createServerStub}
+      app = 'im an app'
+
+      (new Server([], app, http, port)).run()
+
+      expect(createServerStub.withArgs(app)).to.have.been.calledOnce
+      expect(listenSpy.withArgs(port)).to.to.have.been.calledOnce
