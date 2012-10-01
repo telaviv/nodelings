@@ -23,7 +23,7 @@ var casper = require('casper').create({
     logLevel: 'debug'
 });
 var system = require('system');
-var testing = require('./tests/testing.js').testing;
+var testing = require('./testing.js').testing;
 
 
 var verifySelectors = function _verifySelectors() {
@@ -41,9 +41,9 @@ testing.initialize(casper);
 var PORT = parseInt(system.env.PORT) || 3001;
 casper.start('http://localhost:' + PORT + '/signup').then(function createDomRunner() {
     this.each(tests, function eachTest(self, testCase) {
-	self.then(function runTest() {
-	    testCase();
-	});
+	    self.then(function runTest() {
+	        testCase();
+	    });
     });
 });
 

@@ -4,6 +4,7 @@
 .\#*
 tests/server/*.js
 tests/testing/*.js
+tests/bin/app.pid
 logic/*.js
 logs
 app.js

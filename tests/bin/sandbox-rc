@@ -1,9 +1,8 @@
 export PS1="(sandbox)>"
-cur="$(dirname $0)"
 
-log_dir="$cur/../../logs"
+log_dir="../logs"
 if [ ! -d $log_dir ]; then
     mkdir $log_dir
 fi
-PORT=3001 SANDBOX=1 coffee "$cur/../../app.coffee" 2>&1 > "$log_dir/sandbox.out" &
-echo "$!" > "$cur/app.pid"
+PORT=3001 SANDBOX=1 coffee "../app.coffee" 2>&1 > "$log_dir/sandbox.out" &
+echo "$!" > "bin/app.pid"
