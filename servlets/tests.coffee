@@ -22,14 +22,30 @@
 # GET test page
 ###
 
+fs = require('fs')
+
 class TestServlet
   constructor: ->
     @routes = [
       {match: '/tests', route: @tests, method: 'get'}
     ]
 
-  tests: (req, res) ->
+  tests: (req, res) =>
     env = { title: 'Nodeling Tests' }
+    env['testFiles'] = @testFiles()
     res.render('tests', env)
+
+  testFiles: ->
+    publicTestDir = '/js/tests/'
+    privateTestDir = __dirname + '/../public/js/tests/'
+    files = fs.readdirSync(privateTestDir)
+    tests = []
+
+    for file in files
+      match = file.match(/(.*-spec\.js$)/)
+      if match
+        tests.push(publicTestDir + match[1])
+
+    return tests
 
 exports.servlet = TestServlet

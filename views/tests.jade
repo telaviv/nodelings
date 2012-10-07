@@ -23,8 +23,9 @@ block append head
   script(src='/js/lib/mocha.js')
   script(src='/js/lib/chai.js')
   script mocha.setup('bdd');
-  script(src='/js/tests/event-manager-spec.js')
-  script(src='/js/tests/canvas-event-spec.js')
+  - for (var i = 0; i < testFiles.length; ++i) {
+  script(src="#{testFiles[i]}")
+  - }
   script
     $(function() {mocha.run();});
 
