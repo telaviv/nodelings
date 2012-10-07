@@ -37,7 +37,7 @@ describe('CanvasEvent', function() {
     });
 
     afterEach(function() {
-	$('canvas#' + CANVAS_ID).remove();
+	    $('canvas#' + CANVAS_ID).remove();
     });
 
     it('adapts events on the canvas to game events', function() {
