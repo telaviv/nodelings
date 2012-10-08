@@ -5,6 +5,7 @@
 tests/server/*.js
 tests/testing/*.js
 tests/bin/app.pid
+util/file-utils.js
 logic/*.js
 logs
 app.js
