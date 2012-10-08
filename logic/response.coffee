@@ -26,4 +26,10 @@ class Response
   # @param resp node's response object.
   constructor: (@resp) ->
 
+  # Render's a template.
+  # @param {string} view name.
+  # @param {object} env variables to be made available to the template.
+  render: (view, env) ->
+    @resp.render(view, env)
+
 exports.Response = Response

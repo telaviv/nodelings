@@ -28,6 +28,12 @@ chai.Assertion.includeStack = true
 chai.use(sinonChai)
 
 describe 'Response', ->
-  it 'can be created', ->
-    new Response(null)
+  describe '#render', ->
+    it "uses nodejs's render method.", ->
+      jresponse = {render: ->}
+      spy = sinon.spy(jresponse, 'render')
 
+      response = new Response(jresponse)
+      response.render('cats', 'dogs')
+
+      expect(spy.withArgs('cats', 'dogs')).to.have.been.calledOnce

@@ -23,6 +23,7 @@ sinonChai = require('sinon-chai')
 expect = chai.expect
 
 Server = require('../../server').Server
+Response = require('../../logic/response').Response
 
 chai.Assertion.includeStack = true
 chai.use(sinonChai)
@@ -30,30 +31,35 @@ chai.use(sinonChai)
 describe 'Server', ->
   it 'assigns a single route correctly', ->
     match = '/fake'
-    route = sinon.spy()
-    servlet = {routes: [{match: match, route: route, method: 'get'}]}
+    routeSpy = sinon.spy()
+    servlet = {routes: [{match: match, route: routeSpy, method: 'get'}]}
 
     app = {get: ->}
-    spy = sinon.spy(app, 'get')
-    spy.withArgs(match, route)
+    appSpy = sinon.spy(app, 'get')
 
     new Server([servlet], app)
 
-    expect(spy.withArgs(match, route)).to.have.been.calledOnce
+    expect(appSpy.withArgs(match)).to.have.been.calledOnce
+    modifiedRoute = appSpy.getCall(0).args[1]
+    modifiedRoute(null, null)
+    expect(routeSpy).to.have.been.calledOnce
 
   it 'assigns multiple routes correctly', ->
     app = {get: ->}
     spy = sinon.spy(app, 'get')
     routes = []
     for i in [1..3]
-      obj = {match: '/fake' + i, route: i, method: 'get'}
+      obj = {match: '/fake' + i, route: sinon.spy(), method: 'get'}
       routes.push(obj)
       spy.withArgs(obj.match, obj.route)
 
     new Server([{routes: routes}], app)
 
-    for obj in routes
-      expect(spy.withArgs(obj.match, obj.route)).to.have.been.calledOnce
+    for obj, i in routes
+      expect(spy.withArgs(obj.match)).to.have.been.calledOnce
+      modifiedRoute = spy.getCall(i).args[1]
+      modifiedRoute(null, null)
+      expect(obj.route).to.have.been.calledOnce
 
   it 'selectively chooses http type based on the method', ->
     getSpy = sinon.spy()
@@ -67,11 +73,9 @@ describe 'Server', ->
     new Server([{routes: routes}], app)
 
     expect(getSpy).to.have.been.calledOnce
-    expect(getSpy).to.have.been.calledWithExactly(
-      routes[0].match, routes[0].route)
+    expect(getSpy).to.have.been.calledWith(routes[0].match)
     expect(postSpy).to.have.been.calledOnce
-    expect(postSpy).to.have.been.calledWithExactly(
-      routes[1].match, routes[1].route)
+    expect(postSpy).to.have.been.calledWith(routes[1].match)
 
   it 'handles multiple servlets', ->
     servletA = {routes: [{match: '/fake-A', route: 'A', method: 'get'}]}
@@ -84,8 +88,23 @@ describe 'Server', ->
     routeA = servletA.routes[0]
     routeB = servletB.routes[0]
 
-    expect(spy.withArgs(routeA.match, routeA.route)).to.have.been.calledOnce
-    expect(spy.withArgs(routeB.match, routeB.route)).to.have.been.calledOnce
+    expect(spy.withArgs(routeA.match)).to.have.been.calledOnce
+    expect(spy.withArgs(routeB.match)).to.have.been.calledOnce
+
+  it "passes nodelings' Response objects to servlets", ->
+    app = {get: ->}
+    appSpy = sinon.spy app, 'get'
+    rawRouteSpy = sinon.spy()
+    servlet = {routes: [{match: '/end', route: rawRouteSpy, method: 'get'}]}
+
+    new Server([servlet], app)
+
+    modifiedRoute = appSpy.getCall(0).args[1]
+    # modified routes take "raw" req and res objects. null works fine here.
+    modifiedRoute(null, null)
+
+    response = rawRouteSpy.getCall(0).args[1]
+    expect(response).to.be.an.instanceof(Response)
 
   describe 'run', ->
     it 'listens on the servlet created by createServer', ->
@@ -99,4 +118,4 @@ describe 'Server', ->
       (new Server([], app, http, port)).run()
 
       expect(createServerStub.withArgs(app)).to.have.been.calledOnce
-      expect(listenSpy.withArgs(port)).to.to.have.been.calledOnce
+      expect(listenSpy.withArgs(port)).to.have.been.calledOnce

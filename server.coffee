@@ -17,6 +17,8 @@
 # along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
+Response = require('./logic/response').Response
+
 ###
 # This class is responsible for all http routing and processing.
 ###
@@ -24,7 +26,16 @@ class Server
   constructor: (servlets, @app, @http, @port) ->
     for servlet in servlets
       for route in servlet.routes
-        @app[route.method] route.match, route.route
+        @app[route.method] route.match, @wrapRoute(route.route)
+
+  ###
+  # Instead of of the raw res and req objects, let's pass
+  # a nodelings' Response object
+  ###
+  wrapRoute: (route) ->
+    return (req, res) ->
+      response = new Response res
+      route(req, response)
 
   ###
   # Permanently listens for http requests.
