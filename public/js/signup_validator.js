@@ -15,27 +15,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Nodelings.  If not, see <http://www.gnu.org/>
- **/
+ */
 
-describe('SignupValidator', function() {
-    var markupText = ['<form>',
-              	      '<input name="username"/>',
-              	      '<input name="password"/>',
-              	      '<input name="verify-password"/>',
-                      '</form>'].join('')
-
-    beforeEach(function() {
-        this.markup = $(markupText)
-        $('body').append(this.markup);
-    });
-
-    afterEach(function() {
-        this.markup.remove();
-    });
-
-    it('can be created', function() {
-        var signupValidator = new SignupValidator(this.markup);
-    });
-});
-
-
+/**
+ * Validation class for the signup form.
+ */
+var SignupValidator = function(container) {
+    this.username = $('input[name="username"]');
+    this.password = $('input[name="password"]');
+    this.verify = $('input[name="verify-password"]');
+};
