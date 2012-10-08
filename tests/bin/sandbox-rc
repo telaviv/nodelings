@@ -4,5 +4,5 @@ log_dir="../logs"
 if [ ! -d $log_dir ]; then
     mkdir $log_dir
 fi
-PORT=3001 SANDBOX=1 coffee "../app.coffee" 2>&1 > "$log_dir/sandbox.out" &
+PORT=3001 SANDBOX=1 supervisor -w "../servlets" "../app.coffee" &> "$log_dir/sandbox.out" &
 echo "$!" > "bin/app.pid"
