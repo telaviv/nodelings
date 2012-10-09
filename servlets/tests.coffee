@@ -22,7 +22,7 @@
 # GET test page
 ###
 
-fs = require('fs')
+FileUtils = require('./../util/file-utils').FileUtils
 
 class TestServlet
   constructor: ->
@@ -38,13 +38,11 @@ class TestServlet
   testFiles: ->
     publicTestDir = '/js/tests/'
     privateTestDir = __dirname + '/../public/js/tests/'
-    files = fs.readdirSync(privateTestDir)
-    tests = []
+    matches = FileUtils.matches(privateTestDir, /(.*-spec\.js$)/)
 
-    for file in files
-      match = file.match(/(.*-spec\.js$)/)
-      if match
-        tests.push(publicTestDir + match[1])
+    tests = []
+    for match in matches
+      tests.push(publicTestDir + match[1])
 
     return tests
 
