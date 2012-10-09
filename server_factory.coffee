@@ -19,7 +19,7 @@
 
 config = require('./config').config
 express = require('express')
-fs = require('fs')
+FileUtils = require('./util/file-utils').FileUtils
 http = require('http')
 Server = require('./server').Server
 
@@ -49,13 +49,11 @@ class ServerFactory
   @createServlets: ->
     # find all files in the servlet directory and create objects from them.
     servletDir = __dirname + '/servlets/'
-    files = fs.readdirSync(servletDir)
-    servlets = []
+    matches = FileUtils.matches(servletDir, /(.*)\.js$/)
 
-    for file in files
-      match = file.match(/(.*)\.js$/)
-      if match
-        servlets.push(new (require(servletDir + match[1]).servlet)())
+    servlets = []
+    for match in matches
+      servlets.push(new (require(servletDir + match[1]).servlet)())
 
     return servlets
 
