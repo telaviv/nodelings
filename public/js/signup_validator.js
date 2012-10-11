@@ -21,7 +21,25 @@
  * Validation class for the signup form.
  */
 var SignupValidator = function(container) {
-    this.username = $('input[name="username"]');
-    this.password = $('input[name="password"]');
-    this.verify = $('input[name="verify-password"]');
+    var sections = ['username', 'password', 'verify-password'];
+    for (var i = 0; i < sections.length; ++i) {
+        var member = sections[i];
+        var section = container.find('div.' + member);
+        this[member] = {
+            input: section.children('input'),
+            msg: section.children('.inline-message')
+        };
+    }
+    this.username.input.blur($.proxy(this.validateUsername, this));
 };
+
+SignupValidator.prototype.validateUsername = function() {
+    this.username.msg.removeClass('invalid');
+    var username = this.username.input.val();
+    if (username.length < 5 || username.length > 15) {
+        this.username.msg.addClass('invalid');
+        this.username.msg.text('The username should be between 5 and 15 characters long.');
+    }
+};
+
+

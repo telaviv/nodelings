@@ -18,23 +18,44 @@
  **/
 
 describe('SignupValidator', function() {
+    var expect = chai.expect;
     var markupText = ['<form>',
-              	      '<input name="username"/>',
-              	      '<input name="password"/>',
-              	      '<input name="verify-password"/>',
+              	      	'<div class="username">',
+                      		'<input name="username"/>',
+                      		'<span class="inline-message"></span>',
+                      	'</div>',
+              	      	'<div class="password">',
+                      		'<input name="password"/>',
+                      		'<span class="inline-message"></span>',
+                      	'</div>',
+              	      	'<div class="verify-password">',
+                      		'<input name="verify-password"/>',
+                      		'<span class="inline-message"></span>',
+                      	'</div>',
                       '</form>'].join('')
 
     beforeEach(function() {
         this.markup = $(markupText)
         $('body').append(this.markup);
+        this.sv = new SignupValidator(this.markup);
     });
 
     afterEach(function() {
         this.markup.remove();
     });
 
-    it('can be created', function() {
-        var signupValidator = new SignupValidator(this.markup);
+    it('errors if you type an invalid username', function() {
+        // our only limits are that the name has to be
+        // 5 <= 15 characters.
+
+        var input = this.markup.find('div.username input');
+        var msg = this.markup.find('div.username .inline-message');
+
+        input.val('Loui');
+        input.blur();
+
+        expect(msg.hasClass('invalid')).to.be.ok
+        expect(msg.text()).to.be.ok
     });
 });
 
