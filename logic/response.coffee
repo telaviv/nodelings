@@ -1,5 +1,6 @@
 ###
 # Copyright 2012 Shawn Krisman
+#
 # This file is part of Nodelings.
 #
 # Nodelings is free software: you can redistribute it and/or modify
@@ -22,6 +23,8 @@
 # various http response actions via side effects.
 ###
 
+FileUtils = require('./../util/file-utils').FileUtils
+
 class Response
   # @param resp node's response object.
   constructor: (@resp) ->
@@ -30,6 +33,19 @@ class Response
   # @param {string} view name.
   # @param {object} env variables to be made available to the template.
   render: (view, env) ->
-    @resp.render(view, env)
+    env['jsFiles'] = @loadJs()
+    @resp.render view, env
+
+  # Creates a list of js files to include client side.
+  loadJs: ->
+    publicJsDir = '/js/'
+    privateJsDir = __dirname + '/../public/js/'
+    matches = FileUtils.matches privateJsDir, /(.*\.js$)/
+
+    files = []
+    for match in matches
+      files.push(publicJsDir + match[1])
+
+    return files
 
 exports.Response = Response
