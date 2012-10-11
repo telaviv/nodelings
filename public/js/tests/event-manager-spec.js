@@ -21,11 +21,11 @@ describe('EventManager', function() {
     var expect = chai.expect;
 
     beforeEach(function() {
-	this.em = new EventManager();
+	    this.em = new EventManager();
     });
 
     it('exists', function() {
-	expect(this.em).to.exist;
+	    expect(this.em).to.exist;
     });
 
     var EventCounter = function(type) {
