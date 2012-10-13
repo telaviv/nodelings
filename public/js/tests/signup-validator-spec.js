@@ -37,7 +37,7 @@ describe('SignupValidator', function() {
     beforeEach(function() {
         this.markup = $(markupText)
         $('body').append(this.markup);
-        this.sv = new SignupValidator(this.markup);
+        new SignupValidator(this.markup);
     });
 
     afterEach(function() {
