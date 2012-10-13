@@ -31,17 +31,67 @@ var SignupValidator = function(container) {
         };
     }
     this.username.input.blur($.proxy(this.validateUsername, this));
+    this.password.input.blur($.proxy(this.validatePassword, this));
+    this['verify-password'].input.blur($.proxy(this.validateVerifyPassword, this));
 };
 
+
 SignupValidator.prototype.validateUsername = function() {
-    this.username.msg.removeClass('invalid');
-    var username = this.username.input.val();
-    if (username.length < 5 || username.length > 15) {
-        this.username.msg.addClass('invalid');
-        this.username.msg.text('The username should be between 5 and 15 characters long.');
-    } else {
-        this.username.msg.text('');
-    }
+    var validator = function(text) {
+        return text.length >= 5 && text.length <= 15;
+    };
+
+    this.validate(
+        this.username.input,
+        this.username.msg,
+        validator,
+        'Your username should be between 5 and 15 characters.'
+    );
 };
+
+SignupValidator.prototype.validatePassword = function() {
+    var validator = function(text) {
+        return text.length > 5;
+    };
+
+    this.validate(
+        this.password.input,
+        this.password.msg,
+        validator,
+        'Your password should be at least 6 characters.'
+    );
+};
+
+SignupValidator.prototype.validateVerifyPassword = function() {
+    var validator = function(text) {
+        return text === this.password.input.val();
+    };
+
+    this.validate(
+        this['verify-password'].input,
+        this['verify-password'].msg,
+        $.proxy(validator, this),
+        'Your password should be at least 6 characters.'
+    );
+};
+
+/**
+ * @param {!jQuery} input
+ * @param {!jQuery} msg place to put the failureText
+ * @param {function(string)} validator returns true if the string in the input
+ *                           is a valid string.
+ * @param {string} failureText placed in the msg element in case of failure.
+ */
+SignupValidator.prototype.validate = function(input, msg, validator, failureText) {
+    var text = input.val();
+    msg.removeClass('invalid');
+    if (validator(text)) {
+        msg.text('');
+    } else {
+        msg.addClass('invalid').text(failureText);
+    }
+}
+
+
 
 

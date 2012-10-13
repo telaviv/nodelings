@@ -44,27 +44,64 @@ describe('SignupValidator', function() {
         this.markup.remove();
     });
 
-    it('errors if you type an invalid username', function() {
+    it('validates username input', function() {
         // our only limits are that the name has to be
-        // 5 <= 15 characters.
+        // >= 5  && <= 15 characters.
 
         var input = this.markup.find('div.username input');
         var msg = this.markup.find('div.username .inline-message');
 
         input.val('Loui');
         input.blur();
-        expect(msg.hasClass('invalid')).to.be.ok
-        expect(msg.text()).to.be.ok
+        expect(msg.hasClass('invalid')).to.be.ok;
+        expect(msg.text()).to.be.ok;
 
-        input.val('Louis A');
+        input.val('Louis CK');
         input.blur();
-        expect(msg.hasClass('invalid')).to.not.be.ok
-        expect(msg.text()).to.not.be.ok
+        expect(msg.hasClass('invalid')).to.not.be.ok;
+        expect(msg.text()).to.not.be.ok;
 
         input.val('Louis Louis Louis Louis');
         input.blur();
-        expect(msg.hasClass('invalid')).to.be.ok
-        expect(msg.text()).to.be.ok
+        expect(msg.hasClass('invalid')).to.be.ok;
+        expect(msg.text()).to.be.ok;
+    });
+
+    it('validates password input', function() {
+        // 6 character limit to passwords.
+
+        var input = this.markup.find('div.password input');
+        var msg = this.markup.find('div.password .inline-message');
+
+        input.val('passw');
+        input.blur();
+        expect(msg.hasClass('invalid')).to.be.ok;
+        expect(msg.text()).to.be.ok;
+
+        input.val('passw*!,');
+        input.blur();
+        expect(msg.hasClass('invalid')).to.not.be.ok;
+        expect(msg.text()).to.not.be.ok;
+    });
+
+    it('validates verify-password input', function() {
+        // 6 character limit to passwords.
+
+        var passInput = this.markup.find('div.password input');
+        var input = this.markup.find('div.verify-password input');
+        var msg = this.markup.find('div.verify-password .inline-message');
+
+        passInput.val('password');
+
+        input.val('password!');
+        input.blur();
+        expect(msg.hasClass('invalid')).to.be.ok;
+        expect(msg.text()).to.be.ok;
+
+        input.val('password');
+        input.blur();
+        expect(msg.hasClass('invalid')).to.not.be.ok;
+        expect(msg.text()).to.not.be.ok;
     });
 });
 
