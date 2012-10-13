@@ -39,6 +39,8 @@ SignupValidator.prototype.validateUsername = function() {
     if (username.length < 5 || username.length > 15) {
         this.username.msg.addClass('invalid');
         this.username.msg.text('The username should be between 5 and 15 characters long.');
+    } else {
+        this.username.msg.text('');
     }
 };
 

@@ -53,7 +53,16 @@ describe('SignupValidator', function() {
 
         input.val('Loui');
         input.blur();
+        expect(msg.hasClass('invalid')).to.be.ok
+        expect(msg.text()).to.be.ok
 
+        input.val('Louis A');
+        input.blur();
+        expect(msg.hasClass('invalid')).to.not.be.ok
+        expect(msg.text()).to.not.be.ok
+
+        input.val('Louis Louis Louis Louis');
+        input.blur();
         expect(msg.hasClass('invalid')).to.be.ok
         expect(msg.text()).to.be.ok
     });
