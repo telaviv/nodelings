@@ -3,10 +3,10 @@
 old_dir=$(pwd)
 script_dir="$(dirname $0)"
 
-cd "$script_dir/.."
+cd "$script_dir/../.."
 
-bash --rcfile "bin/sandbox-rc"
-pid_file="bin/app.pid"
+bash --rcfile "tests/bin/sandbox-rc"
+pid_file="tests/bin/app.pid"
 if [ -e $pid_file ]; then
     pid=$(cat $pid_file)
     kill $pid

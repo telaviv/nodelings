@@ -17,10 +17,13 @@
 # along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
+crypto = require('crypto')
+fs = require('fs')
+https = require('https')
+
 config = require('./config').config
 express = require('express')
 FileUtils = require('./util/file-utils').FileUtils
-http = require('http')
 Server = require('./server').Server
 
 # Factory for the server class.
@@ -46,6 +49,14 @@ class ServerFactory
 
     return app
 
+  @createServer: ->
+    privateKey = fs.readFileSync(config.ssl_private_key)
+    certificate = fs.readFileSync(config.ssl_certificate)
+
+    options = {key: privateKey, cert: certificate}
+
+    return https.createServer(options)
+
   @createServlets: ->
     # find all files in the servlet directory and create objects from them.
     servletDir = __dirname + '/servlets/'
@@ -60,8 +71,9 @@ class ServerFactory
   @create: ->
     servlets = @createServlets()
     app = @createApp()
+    server = @createServer()
     port = config.app_port
 
-    return new Server(servlets, app, http, port)
+    return new Server(servlets, app, server, port)
 
 exports.ServerFactory = ServerFactory

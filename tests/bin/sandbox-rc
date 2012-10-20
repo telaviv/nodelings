@@ -2,9 +2,9 @@
 
 export PS1="(sandbox)>"
 
-log_dir="../logs"
+log_dir="logs"
 if [ ! -d $log_dir ]; then
     mkdir $log_dir
 fi
-PORT=3001 SANDBOX=1 supervisor -w ".." "../app.coffee" &> "$log_dir/sandbox.out" &
-echo "$!" > "bin/app.pid"
+PORT=3001 SANDBOX=1 supervisor -w "." "app.coffee" &> "$log_dir/sandbox.out" &
+echo "$!" > "tests/bin/app.pid"

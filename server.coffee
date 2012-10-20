@@ -23,7 +23,7 @@ Response = require('./logic/response').Response
 # This class is responsible for all http routing and processing.
 ###
 class Server
-  constructor: (servlets, @app, @http, @port) ->
+  constructor: (servlets, @app, @server, @port) ->
     for servlet in servlets
       for route in servlet.routes
         @app[route.method] route.match, @wrapRoute(route.route)
@@ -41,8 +41,9 @@ class Server
   # Permanently listens for http requests.
   ###
   run: ->
-    port = @port
-    @http.createServer(@app).listen @port, ->
-      console.log 'Express server listening on port ' + port
+    @server.addListener 'request', @app
+    @server.listen @port, =>
+      console.log 'Express server listening on port ' + @port
+
 
 exports.Server = Server

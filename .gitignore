@@ -11,6 +11,8 @@ logs
 app.js
 server.js
 server_factory.js
+config.js
+ssl/*
 
 # npm stuff
 node_modules

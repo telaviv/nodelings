@@ -61,7 +61,7 @@ describe 'Server', ->
       modifiedRoute(null, null)
       expect(obj.route).to.have.been.calledOnce
 
-  it 'selectively chooses http type based on the method', ->
+  it 'selectively chooses http method based on the method arg', ->
     getSpy = sinon.spy()
     postSpy = sinon.spy()
     app = {get: getSpy, post: postSpy}
@@ -110,12 +110,11 @@ describe 'Server', ->
     it 'listens on the servlet created by createServer', ->
       port = 8080
       listenSpy = sinon.spy()
-      server = {listen: listenSpy}
-      createServerStub = sinon.stub().returns(server)
-      http = {createServer: createServerStub}
+      addListenerSpy = sinon.spy()
+      server = {listen: listenSpy, addListener: addListenerSpy}
       app = 'im an app'
 
-      (new Server([], app, http, port)).run()
+      (new Server([], app, server, port)).run()
 
-      expect(createServerStub.withArgs(app)).to.have.been.calledOnce
+      expect(addListenerSpy.withArgs('request', app)).to.have.been.calledOnce
       expect(listenSpy.withArgs(port)).to.have.been.calledOnce
