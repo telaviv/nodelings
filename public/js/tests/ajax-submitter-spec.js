@@ -18,8 +18,28 @@
  **/
 
 describe('AjaxSubmitter', function() {
+    var formMarkup = [
+        "<form action='#' method='post' data-url='/wherever'>",
+        	"<input type='text' name='cake'>Red Velvet</input>",
+        "</form>"
+    ].join('\n');
+
+    var msgMarkup = '<p>';
+
+    beforeEach(function() {
+        this.form = $(formMarkup);
+        this.msg = $(msgMarkup);
+        $('body').append(this.form);
+        $('body').append(this.msg);
+    });
+
+    afterEach(function() {
+        this.form.remove();
+        this.msg.remove();
+    });
+
     it('can be instantiated', function() {
-        new AjaxSubmitter();
+        new AjaxSubmitter(this.form, this.msg);
     });
 });
 
