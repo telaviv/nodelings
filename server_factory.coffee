@@ -53,7 +53,12 @@ class ServerFactory
     privateKey = fs.readFileSync(config.ssl_private_key)
     certificate = fs.readFileSync(config.ssl_certificate)
 
-    options = {key: privateKey, cert: certificate}
+    options =
+      key: privateKey
+      cert: certificate
+      # these are to mitigate BEAST attacks
+      ciphers: '!aNULL:!eNULL:!EXPORT:!DSS:!DES:RC4-SHA:RC4-MD5:ALL'
+      honorCipherOrder: true
 
     return https.createServer(options)
 
