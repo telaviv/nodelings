@@ -18,8 +18,20 @@
  */
 
 /**
- * Validation class for the signup form.
+ * Submits forms designed to be used with ajax.
+ *
+ * Forms used with this class typically have vacuous actions and
+ * have their 'data-url' attribute set to their action.
+ *
+ * When this class submits the form it expects back json with a 'success'
+ * field. When success is true a 'redirect' field is included that has a
+ * value of a url to redirect to. When success is false, a 'msg' field is
+ * included with a value of a string to be inserted into the msg param.
+ *
+ * @param form - jquery form to have its submit event listened to.
+ * @param msg - jquery element to have text inserted into it. A class
+ *              'invalid' will be added to it when text is inserted.
  */
-var SignupSubmitter = function(container) {
+var AjaxSubmitter = function(form, msg) {
 
 };

@@ -17,9 +17,9 @@
  * along with Nodelings.  If not, see <http://www.gnu.org/>
  **/
 
-describe('SignupSubmitter', function() {
+describe('AjaxSubmitter', function() {
     it('can be instantiated', function() {
-        new SignupSubmitter();
+        new AjaxSubmitter();
     });
 });
 
