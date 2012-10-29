@@ -34,6 +34,7 @@
  */
 var AjaxSubmitter = function(form, msg) {
     this.form = form;
+    this.msg = msg;
     form.submit($.proxy(this.submit, this));
 };
 
@@ -43,5 +44,10 @@ AjaxSubmitter.prototype.submit = function(evt) {
     var url = this.form.data('url');
     var data = this.form.serialize();
     var type = this.form.attr('method');
-    $.ajax({url: url, data: data, type: type});
+    $.ajax({url: url, data: data, type: type})
+        .fail($.proxy(this.ajaxFailure, this));
+};
+
+AjaxSubmitter.prototype.ajaxFailure = function() {
+    this.msg.text('Something is horribly amiss! Please try again later!');
 };

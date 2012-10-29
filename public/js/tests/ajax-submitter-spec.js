@@ -41,7 +41,7 @@ describe('AjaxSubmitter', function() {
         this.msg.remove();
     });
 
-    it('it submits the form to the data-url', function() {
+    it('submits the form to the data-url', function() {
         var xhr = sinon.useFakeXMLHttpRequest();
         var requests = [];
         xhr.onCreate = function (xhr) {
@@ -52,6 +52,18 @@ describe('AjaxSubmitter', function() {
         expect(requests).to.have.length(1);
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/wherever');
+
+        xhr.restore();
     });
 
+    it('populates msg with text on protocol failure', function() {
+        var server = sinon.fakeServer.create();
+        server.respondWith([500, {}, '']);
+
+        this.form.submit();
+        server.respond();
+        expect(this.msg.text()).to.have.length.above(0);
+
+        server.restore();
+    });
 });
