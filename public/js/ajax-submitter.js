@@ -33,5 +33,15 @@
  *              'invalid' will be added to it when text is inserted.
  */
 var AjaxSubmitter = function(form, msg) {
+    this.form = form;
+    form.submit($.proxy(this.submit, this));
+};
 
+AjaxSubmitter.prototype.submit = function(evt) {
+    evt.preventDefault();
+
+    var url = this.form.data('url');
+    var data = this.form.serialize();
+    var type = this.form.attr('method');
+    $.ajax({url: url, data: data, type: type});
 };

@@ -22,6 +22,8 @@ block append head
   link(rel='stylesheet', href='/stylesheets/mocha.css')
   script(src='/js/lib/mocha.js')
   script(src='/js/lib/chai.js')
+  script(src='/js/lib/sinon.js')
+  script(src='/js/lib/sinon-chai.js')
   script mocha.setup('bdd');
   - for (var i = 0; i < testFiles.length; ++i) {
   script(src="#{testFiles[i]}")

@@ -18,9 +18,11 @@
  **/
 
 describe('AjaxSubmitter', function() {
+    var expect = chai.expect;
+
     var formMarkup = [
         "<form action='#' method='post' data-url='/wherever'>",
-        	"<input type='text' name='cake'>Red Velvet</input>",
+        	"<input type='text' name='cake' value='Red Velvet'/>",
         "</form>"
     ].join('\n');
 
@@ -31,6 +33,7 @@ describe('AjaxSubmitter', function() {
         this.msg = $(msgMarkup);
         $('body').append(this.form);
         $('body').append(this.msg);
+        this.ajaxSubmitter = new AjaxSubmitter(this.form, this.msg);
     });
 
     afterEach(function() {
@@ -38,9 +41,17 @@ describe('AjaxSubmitter', function() {
         this.msg.remove();
     });
 
-    it('can be instantiated', function() {
-        new AjaxSubmitter(this.form, this.msg);
+    it('it submits the form to the data-url', function() {
+        var xhr = sinon.useFakeXMLHttpRequest();
+        var requests = [];
+        xhr.onCreate = function (xhr) {
+            requests.push(xhr);
+        };
+
+        this.form.submit();
+        expect(requests).to.have.length(1);
+        expect(requests[0].method).to.equal('POST');
+        expect(requests[0].url).to.equal('/wherever');
     });
+
 });
-
-
