@@ -66,4 +66,17 @@ describe('AjaxSubmitter', function() {
 
         server.restore();
     });
+
+    it('populates msg with text on server failure', function() {
+        var server = sinon.fakeServer.create();
+        var errorMsg = 'The snarfle was eaten!'
+        var body = JSON.stringify({success: false, msg: errorMsg});
+        server.respondWith([200, {}, body]);
+
+        this.form.submit();
+        server.respond();
+        expect(this.msg.text()).to.equal(errorMsg);
+
+        server.restore();
+    });
 });

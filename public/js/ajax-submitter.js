@@ -44,8 +44,13 @@ AjaxSubmitter.prototype.submit = function(evt) {
     var url = this.form.data('url');
     var data = this.form.serialize();
     var type = this.form.attr('method');
-    $.ajax({url: url, data: data, type: type})
+    $.ajax({url: url, data: data, type: type, dataType: 'json'})
+        .done($.proxy(this.ajaxSuccess, this))
         .fail($.proxy(this.ajaxFailure, this));
+};
+
+AjaxSubmitter.prototype.ajaxSuccess = function(data) {
+    this.msg.text(data.msg);
 };
 
 AjaxSubmitter.prototype.ajaxFailure = function() {
