@@ -50,7 +50,11 @@ AjaxSubmitter.prototype.submit = function(evt) {
 };
 
 AjaxSubmitter.prototype.ajaxSuccess = function(data) {
-    this.msg.text(data.msg);
+    if (data.success) {
+        Location.redirect(data.redirect);
+    } else {
+        this.msg.text(data.msg);
+    }
 };
 
 AjaxSubmitter.prototype.ajaxFailure = function() {

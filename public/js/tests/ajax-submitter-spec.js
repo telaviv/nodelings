@@ -56,6 +56,35 @@ describe('AjaxSubmitter', function() {
         xhr.restore();
     });
 
+    it('redirects on server success', function() {
+        var stub = sinon.stub(Location, 'redirect');
+        var server = sinon.fakeServer.create();
+        var redirUrl = '/walter/white';
+        var body = JSON.stringify({success: true, redirect: redirUrl});
+        server.respondWith([200, {}, body]);
+
+        this.form.submit();
+        server.respond();
+        expect(stub).to.have.been.calledWith(redirUrl);
+
+        server.restore();
+        stub.restore();
+    });
+
+
+    it('populates msg with text on server failure', function() {
+        var server = sinon.fakeServer.create();
+        var errorMsg = 'The snarfle was eaten!';
+        var body = JSON.stringify({success: false, msg: errorMsg});
+        server.respondWith([200, {}, body]);
+
+        this.form.submit();
+        server.respond();
+        expect(this.msg.text()).to.equal(errorMsg);
+
+        server.restore();
+    });
+
     it('populates msg with text on protocol failure', function() {
         var server = sinon.fakeServer.create();
         server.respondWith([500, {}, '']);
@@ -67,16 +96,4 @@ describe('AjaxSubmitter', function() {
         server.restore();
     });
 
-    it('populates msg with text on server failure', function() {
-        var server = sinon.fakeServer.create();
-        var errorMsg = 'The snarfle was eaten!'
-        var body = JSON.stringify({success: false, msg: errorMsg});
-        server.respondWith([200, {}, body]);
-
-        this.form.submit();
-        server.respond();
-        expect(this.msg.text()).to.equal(errorMsg);
-
-        server.restore();
-    });
 });
