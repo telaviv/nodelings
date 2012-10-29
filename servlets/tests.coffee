@@ -46,4 +46,8 @@ class TestServlet
 
     return tests
 
-exports.servlet = TestServlet
+class TestServletFactory
+  @create: ->
+    return new TestServlet()
+
+exports.servlet = TestServletFactory

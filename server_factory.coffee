@@ -69,7 +69,7 @@ class ServerFactory
 
     servlets = []
     for match in matches
-      servlets.push(new (require(servletDir + match[1]).servlet)())
+      servlets.push require(servletDir + match[1]).servlet.create()
 
     return servlets
 

@@ -32,4 +32,8 @@ class SignupServlet
     env = { title: 'Signup' }
     res.render('signup', env)
 
-exports.servlet = SignupServlet
+class SignupServletFactory
+  @create: ->
+    return new SignupServlet()
+
+exports.servlet = SignupServletFactory
