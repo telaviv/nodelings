@@ -22,7 +22,7 @@ expect = require('chai').expect
 factories = require('../testing/factories')
 
 Crypt = require('../../util/crypt').Crypt
-DevSession = require('../../logic/dev_session').DevSession
+DevSession = require('../../logic/dev-session').DevSession
 
 require('chai').Assertion.includeStack = true
 
