@@ -48,4 +48,12 @@ class Response
 
     return files
 
+  json: (data) ->
+    msg = JSON.stringify(data)
+
+    @resp.setHeader 'Content-Type', 'application/json'
+    @resp.setHeader 'Content-Length', msg.length
+    @resp.write(msg)
+    @resp.end()
+
 exports.Response = Response

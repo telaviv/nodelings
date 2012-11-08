@@ -28,12 +28,31 @@ chai.Assertion.includeStack = true
 chai.use(sinonChai)
 
 describe 'Response', ->
-  describe '#render', ->
+  describe '.render', ->
     it "uses nodejs's render method.", ->
       jresponse = {render: ->}
-      spy = sinon.spy(jresponse, 'render')
+      spy = sinon.spy jresponse, 'render'
 
       response = new Response(jresponse)
-      response.render('cats', 'dogs')
+      response.render 'cats', 'dogs'
 
       expect(spy.withArgs('cats', 'dogs')).to.have.been.calledOnce
+
+  describe '.json', ->
+    it 'Sets the body to the passed in json.', ->
+      json = {keep: 'on keeping on', amirite: true}
+      msg = JSON.stringify json
+
+      jresponse =
+        write: ->
+
+        setHeader: ->
+
+        end: ->
+
+      spy = sinon.spy jresponse, 'write'
+
+      response = new Response(jresponse)
+      response.json json
+
+      expect(spy.withArgs(msg)).to.have.been.calledOnce
