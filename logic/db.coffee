@@ -22,6 +22,11 @@
 # Utility functions for working with mongodb.
 ###
 
+config = require('../config').config
+mongo = require('mongodb')
+Server = mongo.Server
+Db = mongo.Db
+
 ###
 # Initialize a mongodb object to work with Nodelings.
 #
@@ -36,4 +41,21 @@ initialize = (db, cb) ->
     (err) -> cb(err, db)
   )
 
-exports.initialize = initialize;
+###
+# Create a new db object.
+#
+# @param {boolean=} optional. True if the db is supposed to be sandboxed.
+###
+create = (sandbox)->
+  sandbox = (if sandbox? then sandbox else config.mongo_sandbox)
+  server = new Server(
+    config.mongo_host, config.mongo_port, {auto_reconnect: true})
+
+  name = config.mongo_name
+  name += (if config.mongo_sandbox then '-sandbox' else '')
+
+  db = new Db(name, server, {native_parser: true})
+  return db
+
+exports.initialize = initialize
+exports.create = create

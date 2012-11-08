@@ -20,7 +20,6 @@
 
 expect = require('chai').expect
 factories = require('../testing/factories')
-sandboxDB = require('../testing/sandbox_db')
 
 Crypt = require('../../util/crypt').Crypt
 DevSignup = require('../../logic/dev_signup').DevSignup
@@ -31,7 +30,7 @@ describe 'DevSignup', ->
   crypt = new Crypt('testing')
 
   beforeEach (done) ->
-    sandboxDB.create (err, db) =>
+    factories.createDb (err, db) =>
       if (err) then throw err
       @db = db
       @ds = new DevSignup(db, crypt)

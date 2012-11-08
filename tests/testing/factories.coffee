@@ -22,6 +22,7 @@ n# (at your option) any later version.
 # Contains utility methods for creation and retrieval of db objects.
 ###
 
+db = require('../../logic/db')
 DevSignup = require('../../logic/dev_signup').DevSignup
 
 # generates a unique string
@@ -61,5 +62,18 @@ getDevUser = (encUID, db, crypt, cb) ->
       if err then throw err
       cb(doc)
 
+###
+# Creates and initializes a db for testing.
+#
+# @param {cb} callback that takes two args:
+#             {err}
+#             {db} mongodb instance.
+###
+createDb = (cb) ->
+  testDb = db.create true
+  db.initialize(testDb, cb)
+
+
 exports.createDevUser = createDevUser
 exports.getDevUser = getDevUser
+exports.createDb = createDb
