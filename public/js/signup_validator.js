@@ -51,14 +51,14 @@ SignupValidator.prototype.validateUsername = function() {
 
 SignupValidator.prototype.validatePassword = function() {
     var validator = function(text) {
-        return text.length > 5;
+        return text.length > 5 && text.length <= 25;
     };
 
     this.validate(
         this.password.input,
         this.password.msg,
         validator,
-        'Your password should be at least 6 characters.'
+        'Your password should be betweeen 6 and 25 characters.'
     );
 };
 

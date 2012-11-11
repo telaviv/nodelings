@@ -35,8 +35,41 @@ class SignupServlet
     env = { title: 'Signup' }
     res.render('signup', env)
 
-  signupPost: (req, res) ->
-    throw Error('Not Implemented')
+  signupPost: (req, res) =>
+    validated = this._validateRequest(req.body)
+    if (validated.error)
+      res.json {success: false, msg: validated.error}
+    else
+      res.json {success: true, redirect: '/login'}
+
+  _validateRequest: (body) ->
+    username = (val) ->
+      return val.length >= 5 and val.length <= 15
+    password = (val) ->
+      return val.length > 5 and val.length <= 25
+    verifyPassword = (val) ->
+      return val == body.password
+    fields =
+      username:
+        validator: username
+        msg: 'Usernames must be between 5 and 15 characters long.'
+      password:
+        validator: password
+        msg: 'Passwords must be between 6 and 25 characters long.'
+      'verify-password':
+        validator: verifyPassword
+        msg: 'The passwords do not match.'
+
+
+    values = {}
+    for name, map of fields
+      field = body[name]
+      if field and map.validator(field)
+        values[name] = field
+      else
+        return {error: map.msg}
+    return values
+
 
 class SignupServletFactory
   @create: (params) ->
