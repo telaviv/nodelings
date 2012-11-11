@@ -24,6 +24,8 @@ https = require('https')
 config = require('./config').config
 db = require('./logic/db')
 express = require('express')
+secrets = require('./secrets').secrets
+Crypt = require('./util/crypt').Crypt
 FileUtils = require('./util/file-utils').FileUtils
 Server = require('./server').Server
 
@@ -67,15 +69,19 @@ class ServerFactory
     # find all files in the servlet directory and create objects from them.
     servletDir = __dirname + '/servlets/'
     matches = FileUtils.matches(servletDir, /(.*)\.js$/)
+    crypt = @createCrypt
 
     @createDb (db) ->
-      params = {db: db}
+      params = {db: db, crypt: crypt}
 
       servlets = []
       for match in matches
         servlets.push require(servletDir + match[1]).servlet.create(params)
 
       cb(servlets)
+
+  @createCrypt: ->
+    return new Crypt(secrets.cipher_key)
 
   @createDb: (cb) ->
     servletDB = db.create()

@@ -18,7 +18,7 @@
 # along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
-ServerFactory = require('./server_factory').ServerFactory
+ServerFactory = require('./server-factory').ServerFactory
 
 ServerFactory.create (server) ->
   server.run()
