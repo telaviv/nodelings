@@ -18,14 +18,14 @@
 # along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
-
-
 ###
 # Signup endpoints.
 ###
 
+DevSignup = require('../logic/dev-signup').DevSignup
+
 class SignupServlet
-  constructor: (@devSession) ->
+  constructor: (@devSignup) ->
     @routes = [
       {match: '/signup', route: @signupGet, method: 'get'},
       {match: '/signup', route: @signupPost, method: 'post'},
@@ -40,17 +40,8 @@ class SignupServlet
 
 class SignupServletFactory
   @create: (params) ->
-    Crypt = require('../util/crypt').Crypt
-    DevSession = require('../logic/dev-session').DevSession
-    secrets = require('../secrets').secrets
-    DEV_SESSIONS = 3
-
-
-    db = params.db
-    crypt = new Crypt(secrets.cipher_key)
-    devSession = new DevSession(db, crypt, DEV_SESSIONS)
-
-    return new SignupServlet(devSession)
+    devSignup = new DevSignup params.db, params.crypt
+    return new SignupServlet devSignup
 
 exports.SignupServlet = SignupServlet
 exports.servlet = SignupServletFactory
