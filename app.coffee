@@ -20,5 +20,5 @@
 
 ServerFactory = require('./server_factory').ServerFactory
 
-server = ServerFactory.create()
-server.run()
+ServerFactory.create (server) ->
+  server.run()

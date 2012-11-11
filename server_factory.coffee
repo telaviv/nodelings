@@ -22,6 +22,7 @@ fs = require('fs')
 https = require('https')
 
 config = require('./config').config
+db = require('./logic/db')
 express = require('express')
 FileUtils = require('./util/file-utils').FileUtils
 Server = require('./server').Server
@@ -62,23 +63,32 @@ class ServerFactory
 
     return https.createServer(options)
 
-  @createServlets: ->
+  @createServlets: (cb) ->
     # find all files in the servlet directory and create objects from them.
     servletDir = __dirname + '/servlets/'
     matches = FileUtils.matches(servletDir, /(.*)\.js$/)
 
-    servlets = []
-    for match in matches
-      servlets.push require(servletDir + match[1]).servlet.create()
+    @createDb (db) ->
+      params = {db: db}
 
-    return servlets
+      servlets = []
+      for match in matches
+        servlets.push require(servletDir + match[1]).servlet.create(params)
 
-  @create: ->
-    servlets = @createServlets()
-    app = @createApp()
-    server = @createServer()
-    port = config.app_port
+      cb(servlets)
 
-    return new Server(servlets, app, server, port)
+  @createDb: (cb) ->
+    servletDB = db.create()
+    db.initialize servletDB, (err, servletDB)->
+      throw err if err
+      cb(servletDB)
+
+  @create: (cb) ->
+    @createServlets (servlets) =>
+      app = @createApp()
+      server = @createServer()
+      port = config.app_port
+
+      cb(new Server(servlets, app, server, port))
 
 exports.ServerFactory = ServerFactory
