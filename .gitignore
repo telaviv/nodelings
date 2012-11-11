@@ -10,7 +10,7 @@ logic/*.js
 logs
 app.js
 server.js
-server_factory.js
+server-factory.js
 config.js
 ssl/*
 
