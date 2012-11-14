@@ -23,6 +23,7 @@
 ###
 
 DevSignup = require('../logic/dev-signup').DevSignup
+UserExistsError = require('../logic/dev-signup').UserExistsError
 
 class SignupServlet
   constructor: (@devSignup) ->
@@ -41,7 +42,14 @@ class SignupServlet
       return res.json success: false, msg: validated.error
 
     @devSignup.signup validated.username, validated.password, (err, encID) ->
-      res.json success: true, redirect: '/login'
+      if err
+        if err instanceof UserExistsError
+          msg = 'There already exists a user with this name.'
+        else
+          msg = 'We are having technical difficulties, please try again later!'
+        res.json success: false, msg: msg
+      else
+        res.json success: true, redirect: '/login'
 
   _validateRequest: (body) ->
     username = (val) ->

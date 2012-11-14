@@ -86,3 +86,4 @@ DevSignup.prototype._hashPassword = (password) ->
     return bcrypt.hashSync(password, 8)
 
 exports.DevSignup = DevSignup
+exports.UserExistsError = UserExistsError

@@ -4,6 +4,7 @@ sinonChai = require('sinon-chai')
 expect = chai.expect
 
 SignupServlet = require('../../servlets/signup').SignupServlet
+UserExistsError = require('../../logic/dev-signup').UserExistsError
 
 chai.Assertion.includeStack = true
 chai.use(sinonChai)
@@ -20,9 +21,7 @@ describe 'SignupServlet', ->
       request = {body: requestBody}
 
       mockJson = (json) ->
-        expect(json.success).to.exist
-        expect(json.success).to.not.be.ok
-        expect(json.msg).to.exist
+        expect(json).to.have.property('success', false)
         expect(json.msg).to.have.length.above(0)
         done()
       response = {json: mockJson}
@@ -59,10 +58,8 @@ describe 'SignupServlet', ->
       request = {body: body}
 
       mockJson = (json) ->
-        expect(json.success).to.exist
         expect(json.success).to.be.ok
-        expect(json.msg).to.not.exist
-        expect(json.redirect).to.exist
+        expect(json).to.not.have.property('msg')
         expect(json.redirect).to.equal('/login')
         done()
       response = {json: mockJson}
@@ -85,6 +82,21 @@ describe 'SignupServlet', ->
         done()
 
       devSignup = signup: signupSpy
+      response = json: jsonStub
+
+      signupServlet = new SignupServlet(devSignup)
+      signupServlet.signupPost(normalRequest, response)
+
+    it 'fails when a user already exists', (done) ->
+      signupStub = (username, password, cb) ->
+        cb(new UserExistsError())
+      jsonStub = (json) ->
+        expect(json).to.have.property('success', false)
+        expect(json.msg).length.to.be.above(0)
+        expect(json).to.not.have.property('redirect')
+        done()
+
+      devSignup = signup: signupStub
       response = json: jsonStub
 
       signupServlet = new SignupServlet(devSignup)
