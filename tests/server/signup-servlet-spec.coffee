@@ -10,6 +10,12 @@ chai.use(sinonChai)
 
 describe 'SignupServlet', ->
   describe '.signupPost', ->
+    normalRequest =
+      body:
+        username: 'Cat Stevens'
+        password: 'catstevens'
+        'verify-password': 'catstevens'
+
     testDoesNotValidate = (requestBody, done) ->
       request = {body: requestBody}
 
@@ -61,5 +67,25 @@ describe 'SignupServlet', ->
         done()
       response = {json: mockJson}
 
-      signupServlet = new SignupServlet(null)
+      signupSpy = sinon.spy (username, password, cb) ->
+        cb(null, '46789')
+      devSignup = signup: signupSpy
+
+      signupServlet = new SignupServlet(devSignup)
       signupServlet.signupPost(request, response)
+
+    it 'creates a new user', (done) ->
+      signupSpy = sinon.spy (username, password, cb) ->
+        cb(null, '46789')
+      jsonStub = ->
+        expect(signupSpy).to.be.calledWith(
+          normalRequest.body.username,
+          normalRequest.body.password,
+        )
+        done()
+
+      devSignup = signup: signupSpy
+      response = json: jsonStub
+
+      signupServlet = new SignupServlet(devSignup)
+      signupServlet.signupPost(normalRequest, response)

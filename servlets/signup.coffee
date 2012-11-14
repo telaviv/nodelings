@@ -38,9 +38,10 @@ class SignupServlet
   signupPost: (req, res) =>
     validated = this._validateRequest(req.body)
     if (validated.error)
-      res.json {success: false, msg: validated.error}
-    else
-      res.json {success: true, redirect: '/login'}
+      return res.json success: false, msg: validated.error
+
+    @devSignup.signup validated.username, validated.password, (err, encID) ->
+      res.json success: true, redirect: '/login'
 
   _validateRequest: (body) ->
     username = (val) ->
