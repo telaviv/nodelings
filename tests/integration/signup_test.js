@@ -25,26 +25,25 @@ var casper = require('casper').create({
 var system = require('system');
 var testing = require('./tests/testing.js').testing;
 
+PORT = system.env.PORT || 3001;
+unique = function() {return Math.floor(Math.random() * 1e16).toString();}
 
-var verifySelectors = function _verifySelectors() {
-    casper.test.assert(casper.exists('input[name="username"]'))
-    casper.test.assert(casper.exists('input[name="password"]'))
-    casper.test.assert(casper.exists('input[name="verify-password"]'))
-}
+casper.start('https://localhost:' + PORT + '/signup');
 
-tests = [
-    verifySelectors
-];
+casper.then(function() {
+    this.test.comment('Form elements exist.');
+    this.test.assert(casper.exists('input[name="username"]'))
+    this.test.assert(casper.exists('input[name="password"]'))
+    this.test.assert(casper.exists('input[name="verify-password"]'))
+});
 
-// set up casper to have additional debugging hooks.
-testing.initialize(casper);
-var PORT = parseInt(system.env.PORT) || 3001;
-casper.start('https://localhost:' + PORT + '/signup').then(function createDomRunner() {
-    this.each(tests, function eachTest(self, testCase) {
-	    self.then(function runTest() {
-	        testCase();
-	    });
-    });
+casper.then(function() {
+    this.test.comment('Incorrect form submission.');
+    this.fill('form[name="signup-form"]', {
+        'username': unique(),
+        'password': 'password',
+        'verify-password': 'fake-password',
+    }, true);
 });
 
 casper.run();
