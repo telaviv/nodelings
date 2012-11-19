@@ -34,7 +34,8 @@ class SignupServlet
 
   signupGet: (req, res) ->
     env = { title: 'Signup' }
-    res.render('signup', env)
+    res.initJs 'signup.js'
+    res.render 'signup', env
 
   signupPost: (req, res) =>
     validated = this._validateRequest(req.body)

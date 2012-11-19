@@ -43,7 +43,18 @@ casper.then(function() {
         'username': unique(),
         'password': 'password',
         'verify-password': 'fake-password',
-    }, true);
+    }, false);
+});
+
+casper.then(function() {
+    this.test.comment('Click the input.');
+    this.click('input[name="verify-password"]');
+});
+
+casper.then(function() {
+    this.test.comment('There should be an inline error msg.');
+    var err = this.fetchText('span.verify-password .inline-message');
+    this.test.assert(err.length > 0, "expected an inline error msg.");
 });
 
 casper.run();
