@@ -24,7 +24,7 @@ var SignupValidator = function(container) {
     var sections = ['username', 'password', 'verify-password'];
     for (var i = 0; i < sections.length; ++i) {
         var member = sections[i];
-        var section = container.find('div.' + member);
+        var section = container.find('span.' + member);
         this[member] = {
             input: section.children('input'),
             msg: section.children('.inline-message')

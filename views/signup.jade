@@ -21,7 +21,14 @@ block content
   h1= title
   p Welcome to #{title}
   form(action='#', method='post', name='signup-form')
-    input(name='username', type='text')
-    input(name='password', type='password')
-    input(name='verify-password', type='password')
+    span.username.message-input
+      input(name='username', type='text')
+      span.inline-message
+    span.password.message-input
+      input(name='password', type='password')
+      span.inline-message
+    span.verify-password.message-input
+      input(name='verify-password', type='password')
+      span.inline-message
+  p.error-msg
 

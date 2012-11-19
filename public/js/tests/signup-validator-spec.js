@@ -20,18 +20,18 @@
 describe('SignupValidator', function() {
     var expect = chai.expect;
     var markupText = ['<form>',
-              	      	'<div class="username">',
+              	      	'<span class="username">',
                       		'<input name="username"/>',
                       		'<span class="inline-message"></span>',
-                      	'</div>',
-              	      	'<div class="password">',
+                      	'</span>',
+              	      	'<span class="password">',
                       		'<input name="password"/>',
                       		'<span class="inline-message"></span>',
-                      	'</div>',
-              	      	'<div class="verify-password">',
+                      	'</span>',
+              	      	'<span class="verify-password">',
                       		'<input name="verify-password"/>',
                       		'<span class="inline-message"></span>',
-                      	'</div>',
+                      	'</span>',
                       '</form>'].join('')
 
     beforeEach(function() {
@@ -48,8 +48,8 @@ describe('SignupValidator', function() {
         // our only limits are that the name has to be
         // >= 5  && <= 15 characters.
 
-        var input = this.markup.find('div.username input');
-        var msg = this.markup.find('div.username .inline-message');
+        var input = this.markup.find('span.username input');
+        var msg = this.markup.find('span.username .inline-message');
 
         input.val('Loui');
         input.blur();
@@ -70,8 +70,8 @@ describe('SignupValidator', function() {
     it('validates password input', function() {
         // 6 character limit to passwords.
 
-        var input = this.markup.find('div.password input');
-        var msg = this.markup.find('div.password .inline-message');
+        var input = this.markup.find('span.password input');
+        var msg = this.markup.find('span.password .inline-message');
 
         input.val('passw');
         input.blur();
@@ -87,9 +87,9 @@ describe('SignupValidator', function() {
     it('validates verify-password input', function() {
         // 6 character limit to passwords.
 
-        var passInput = this.markup.find('div.password input');
-        var input = this.markup.find('div.verify-password input');
-        var msg = this.markup.find('div.verify-password .inline-message');
+        var passInput = this.markup.find('span.password input');
+        var input = this.markup.find('span.verify-password input');
+        var msg = this.markup.find('span.verify-password .inline-message');
 
         passInput.val('password');
 
