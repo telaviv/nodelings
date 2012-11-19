@@ -28,16 +28,22 @@ FileUtils = require('./../util/file-utils').FileUtils
 class Response
   # @param resp node's response object.
   constructor: (@resp) ->
+    @initJsArr = []
 
   # Render's a template.
   # @param {string} view name.
   # @param {object} env variables to be made available to the template.
   render: (view, env) ->
-    env['jsFiles'] = @loadJs()
+    env['jsFiles'] = @_loadJs()
     @resp.render view, env
 
-  # Creates a list of js files to include client side.
-  loadJs: ->
+  # Creates a list of js files to be included with script tags.
+  _loadJs: ->
+    files = @_loadIncludeJs()
+    return files.concat @initJsArr
+
+  # Creates a list of js files that are always included client side.
+  _loadIncludeJs: ->
     publicJsDir = '/js/'
     privateJsDir = __dirname + '/../public/js/'
     matches = FileUtils.matches privateJsDir, /(.*\.js$)/
@@ -47,6 +53,12 @@ class Response
       files.push(publicJsDir + match[1])
 
     return files
+
+  # When used before render, this will include the given init file in
+  # a script tag.
+  # @param {string} name of the file.
+  initJs: (initFile) ->
+    @initJsArr.push('/js-init/' + initFile);
 
   json: (data) ->
     msg = JSON.stringify(data)

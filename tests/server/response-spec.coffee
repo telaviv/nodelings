@@ -43,15 +43,17 @@ describe 'Response', ->
       jresponse = {render: ->}
       renderSpy = sinon.spy jresponse, 'render'
       matchesStub = sinon.stub(FileUtils, 'matches').returns(
-        [['this.js', 'this.js'], ['that.js', 'that.js']]);
+        [['this.js', 'this.js'], ['that.js', 'that.js']])
 
       response = new Response(jresponse)
       response.render 'cats', {}
 
-      passedEnv = renderSpy.getCall(0).args[1];
+      passedEnv = renderSpy.getCall(0).args[1]
       expect(passedEnv).to.have.property('jsFiles')
         .and.to.include('/js/this.js')
         .and.to.include('/js/that.js')
+
+      matchesStub.restore()
 
   describe '.json', ->
     it 'Sets the body to the passed in json.', ->
@@ -72,3 +74,17 @@ describe 'Response', ->
 
       expect(spy.withArgs(msg)).to.have.been.calledOnce
 
+  describe '.initJs', ->
+    it 'will include passed in files to env[jsFiles]', ->
+      jresponse = {render: ->}
+      renderSpy = sinon.spy jresponse, 'render'
+
+      response = new Response(jresponse)
+      response.initJs 'cats.js'
+      response.initJs 'dogs.js'
+      response.render(null, [])
+
+      passedEnv = renderSpy.getCall(0).args[1]
+      expect(passedEnv).to.have.property('jsFiles')
+        .and.to.include('/js-init/cats.js')
+        .and.to.include('/js-init/dogs.js')
