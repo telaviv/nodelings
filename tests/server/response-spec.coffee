@@ -22,6 +22,7 @@ sinon = require('sinon')
 sinonChai = require('sinon-chai')
 expect = chai.expect
 
+FileUtils = require('../../util/file-utils').FileUtils
 Response = require('../../logic/response').Response
 
 chai.Assertion.includeStack = true
@@ -37,6 +38,20 @@ describe 'Response', ->
       response.render 'cats', 'dogs'
 
       expect(spy.withArgs('cats', 'dogs')).to.have.been.calledOnce
+
+    it 'includes all js files in the js directory', ->
+      jresponse = {render: ->}
+      renderSpy = sinon.spy jresponse, 'render'
+      matchesStub = sinon.stub(FileUtils, 'matches').returns(
+        [['this.js', 'this.js'], ['that.js', 'that.js']]);
+
+      response = new Response(jresponse)
+      response.render 'cats', {}
+
+      passedEnv = renderSpy.getCall(0).args[1];
+      expect(passedEnv).to.have.property('jsFiles')
+        .and.to.include('/js/this.js')
+        .and.to.include('/js/that.js')
 
   describe '.json', ->
     it 'Sets the body to the passed in json.', ->
@@ -56,3 +71,4 @@ describe 'Response', ->
       response.json json
 
       expect(spy.withArgs(msg)).to.have.been.calledOnce
+
