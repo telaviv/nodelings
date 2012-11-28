@@ -25,6 +25,7 @@ var casper = require('casper').create({
 var system = require('system');
 var testing = require('./tests/testing.js').testing;
 
+testing.initialize(casper);
 PORT = system.env.PORT || 3001;
 unique = function() {return Math.floor(Math.random() * 1e16).toString();}
 
@@ -56,5 +57,24 @@ casper.then(function() {
     var err = this.fetchText('span.verify-password .inline-message');
     this.test.assert(err.length > 0, "expected an inline error msg.");
 });
+
+casper.then(function() {
+    this.fill('form[name="signup-form"]', {
+        'username': unique(),
+        'password': 'password',
+        'verify-password': 'password',
+    }, false);
+});
+
+casper.then(function() {
+    casper.evaluate(function() {
+        $('form[name="signup-form"]').submit();
+    });
+});
+
+casper.wait(3000, function() {
+    this.echo('url: ' + this.getCurrentUrl());
+});
+
 
 casper.run();
