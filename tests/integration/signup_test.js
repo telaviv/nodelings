@@ -27,7 +27,7 @@ var testing = require('./tests/testing.js').testing;
 
 testing.initialize(casper);
 PORT = system.env.PORT || 3001;
-unique = function() {return Math.floor(Math.random() * 1e16).toString();}
+unique = function() {return Math.floor(Math.random() * 1e10).toString();}
 
 casper.start('https://localhost:' + PORT + '/signup');
 
@@ -72,8 +72,11 @@ casper.then(function() {
     });
 });
 
-casper.wait(3000, function() {
-    this.echo('url: ' + this.getCurrentUrl());
+casper.waitFor(function() {
+    return this.getCurrentUrl() == 'https://localhost:' + PORT + '/login'
+}, function() { // if we succeed the test is done.
+}, function() {
+    this.echo('Expected a login redirect. Instead the url is: ' + this.getCurrentUrl());
 });
 
 
