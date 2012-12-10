@@ -69,7 +69,7 @@ class ServerFactory
     # find all files in the servlet directory and create objects from them.
     servletDir = __dirname + '/servlets/'
     matches = FileUtils.matches(servletDir, /(.*)\.js$/)
-    crypt = @createCrypt
+    crypt = @createCrypt()
 
     @createDb (db) ->
       params = {db: db, crypt: crypt}
