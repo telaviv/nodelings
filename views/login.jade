@@ -17,3 +17,16 @@
 //- along with Nodelings.  If not, see <http://www.gnu.org/licenses/>.
 
 extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  form(action='#', method='post', name='login-form')
+    span.username.message-input
+      input(name='username', type='text')
+      span.inline-message
+    span.password.message-input
+      input(name='password', type='password')
+      span.inline-message
+    input(type='submit')
+  p.error-msg
