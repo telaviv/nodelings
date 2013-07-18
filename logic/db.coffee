@@ -54,7 +54,7 @@ create = (sandbox)->
   name = config.mongo_name
   name += (if config.mongo_sandbox then '-sandbox' else '')
 
-  db = new Db(name, server, {native_parser: true})
+  db = new Db(name, server)
   return db
 
 exports.initialize = initialize
